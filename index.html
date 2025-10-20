@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Умный квиз с антибот-защитой | Flexbe Quiz</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/51rnOkm.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9fb; color: #333; line-height: 1.6; }
+
+    /* Header */
+    header {
+      background: linear-gradient(rgba(10,61,98,0.85), rgba(10,61,98,0.9)),
+                  url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80') no-repeat center/cover;
+      color: white; text-align: center; padding: 80px 20px;
+      position: relative;
+    }
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    header h1 { font-size: 42px; margin-bottom: 15px; font-weight: 700; }
+    header .subtitle { font-size: 22px; margin-bottom: 25px; opacity: 0.95; }
+    .btn {
+      display: inline-block; padding: 16px 32px; background: #ff6b6b;
+      color: white; font-weight: bold; border-radius: 8px; text-decoration: none;
+      box-shadow: 0 4px 15px rgba(255,107,107,0.3); transition: 0.3s;
+      font-size: 18px;
+    }
+    .btn:hover { background: #ff4b4b; transform: translateY(-2px); }
+
+    .section { padding: 80px 20px; max-width: 1100px; margin: auto; }
+    .section h2 { text-align: center; font-size: 36px; margin-bottom: 50px; color: #0a3d62; font-weight: 700; }
+
+    /* Features */
+    .features { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; }
+    .feature {
+      flex: 1 1 300px; background: white; padding: 35px 25px;
+      border-radius: 12px; text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;
+    }
+    .feature:hover { transform: translateY(-8px); }
+    .feature img { width: 70px; margin-bottom: 20px; }
+    .feature h3 { font-size: 20px; margin-bottom: 15px; color: #0a3d62; }
+
+    /* Promo block */
+    .promo-block{
+      background: #0a3d62; color: white; padding: 50px 20px;
+      text-align: center;
+    }
+    .promo-inner{ max-width:1100px; margin:0 auto; }
+    .promo-title{
+      font-weight: 700; font-size: 28px; line-height:1.3; margin-bottom: 20px;
+    }
+    .promo-list{ 
+      list-style: none; max-width: 600px; margin: 0 auto;
+    }
+    .promo-list li{ 
+      margin: 15px 0; padding-left: 30px; text-align: left;
+      position: relative;
+    }
+    .promo-list li:before {
+      content: "•"; color: #ff6b6b; font-size: 24px;
+      position: absolute; left: 0; top: -2px;
+    }
+
+    footer {
+      background: #0a3d62; color: #fff; text-align: center; padding: 40px 20px;
+    }
+
+    /* Popup form */
+    #leadOverlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.6); z-index:9998;
+    }
+    #leadPopup, #leadThanks {
+      display:none; position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:#fff; color:#333; padding:30px;
+      border-radius:16px; z-index:9999;
+      max-width:400px; width:90%;
+      box-shadow:0 0 30px rgba(0,0,0,0.4);
+      text-align:center;
+    }
+    #leadPopup h3 { margin-bottom:20px; color:#0a3d62; font-size:22px; }
+    #leadPopup input {
+      width:100%; padding:12px; border-radius:8px;
+      border:1px solid #ccc; margin-bottom:15px;
+      font-size:16px;
+    }
+    #leadPopup button {
+      width:100%; padding:14px;
+      border:none; border-radius:8px;
+      background-color:#ff6b6b; color:#fff;
+      font-weight:bold; cursor:pointer; font-size:16px;
+    }
+    #leadPopup button:hover { background:#ff4b4b; }
+
+    /* === КВИЗ FLEXBE СТИЛЬ === */
+.quiz-wrapper * { all: unset; display: revert; box-sizing: border-box; }
+
+.quiz-wrapper{
+  min-height:100svh; display:flex; align-items:center; justify-content:center;
+  padding:24px; background:linear-gradient(180deg,#f6f9fc 0%,#eef3f8 100%);
+}
+.quiz{
+  width:min(880px,96vw); background:#fff; border-radius:20px;
+  box-shadow:0 20px 60px rgba(10,61,98,.15); overflow:hidden;
+  display:grid; grid-template-columns:1fr;
+}
+.quiz__header{
+  background:#0a3d62; color:#fff; padding:18px 22px; display:flex; align-items:center; gap:12px;
+}
+.quiz__logo{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;font-weight:700;}
+.quiz__title{font-weight:800;}
+.quiz__progress{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;opacity:.9;}
+.bar{width:160px;height:8px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden;}
+.bar>span{display:block;height:100%;background:#fff;width:0%}
+.quiz__body{padding:28px 28px 22px;}
+.step{display:none;animation:fade .35s ease;}
+.step.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.q{font-size:22px;font-weight:800;color:#0a3d62;margin-bottom:16px;}
+.options{display:grid;gap:12px;grid-template-columns:repeat(3,1fr);}
+.btn-opt{border:1px solid #e7eef7;border-radius:14px;padding:16px 14px;background:#f8fbff;cursor:pointer;text-align:center;transition:.2s;font-weight:600;}
+.btn-opt:hover{transform:translateY(-1px);background:#f0f6ff;}
+.btn-opt.active{outline:2px solid #0a3d62;background:#e8f3ff;}
+.controls{display:flex;gap:10px;justify-content:space-between;margin-top:22px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 18px;border-radius:12px;border:1px solid #e7eef7;background:#fff;cursor:pointer;transition:.2s;font-weight:700;}
+.btn--primary{background:#ff6b6b;color:#fff;border-color:transparent;}
+.btn--primary:hover{filter:brightness(.98);transform:translateY(-1px);}
+.muted{color:#6b7a90;font-size:13px;margin-top:6px;}
+.lead{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+.field{display:grid;gap:8px;}
+.input{padding:14px 12px;border-radius:12px;border:1px solid #e7eef7;font-size:16px;background:#f9fbfd;}
+.result{border:1px dashed #e7eef7;padding:14px;border-radius:12px;background:#fbfdff;margin-top:10px;font-size:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:700;}
+.ok{background:#e9f7f0;color:#18a957;}
+.warn{background:#fff6e5;color:#996b00;}
+.deny{background:#ffeaea;color:#d9534f;}
+.footer{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e7eef7;background:#fcfdff;}
+.hint{font-size:12px;color:#6b7a90}
+@media(max-width:680px){.options{grid-template-columns:1fr}.lead{grid-template-columns:1fr}.quiz__header{flex-wrap:wrap;gap:8px}.quiz__progress{width:100%}.bar{flex:1}}
+
+    /* Chat block */
+    .chat-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      overflow: hidden;
+      border: 1px solid #e8e8e8;
+    }
+    .chat-header {
+      background: #0a3d62;
+      color: white;
+      padding: 15px 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chat-header img {
+      width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: 0 0 40px;
+    }
+    .chat-header .title { font-size: 16px; font-weight: 700; }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: #f8fafc;
+    }
+    .message {
+      max-width: 80%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .bot {
+      background: #eef4f9;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+    }
+    .user {
+      background: #ff6b6b;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+    .chat-suggestions {
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-top: 1px solid #e8e8e8;
+      background: #f5f7fa;
+    }
+    .chat-suggestions button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      background: #eef4f9;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.3s;
+      color: #0a3d62;
+    }
+    .chat-suggestions button:hover {
+      background: #d6e4f0;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #e8e8e8;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+    }
+    .chat-input button {
+      padding: 0 20px;
+      border: none;
+      background: #ff6b6b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+    .chat-input button:hover { background: #ff4b4b; }
+    .chat-input button svg { width: 20px; height: 20px; fill: white; }
+
+    #typingIndicator {
+      font-style: italic;
+      display: none;
+      align-self: flex-start;
+      margin-left: 10px;
+    }
+    #typingIndicator .dot {
+      animation: blink 1.2s infinite ease-in-out;
+      opacity: 0.3;
+    }
+    #typingIndicator .dot:nth-child(2){animation-delay:0.2s;}
+    #typingIndicator .dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes blink {
+      0%,80%,100%{opacity:0.3;}
+      40%{opacity:1;}
+    }
+
+    @media (max-width: 768px) {
+      .header-content { flex-direction: column; text-align: center; }
+      header h1 { font-size: 32px; }
+      .section { padding: 50px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <h1>Умный квиз с антибот-защитой</h1>
+      <p class="subtitle">Собирайте только качественные лиды 24/7 с интеллектуальной фильтрацией</p>
+      <a href="#quiz" class="btn">Протестировать квиз</a>
+    </div>
+  </header>
+
+  <!-- Квиз -->
+  <section id="quiz" class="section">
+    <h2>Протестируйте умный квиз</h2>
+    <p style="text-align: center; margin-bottom: 30px; font-size: 18px;">Система анализирует поведение и автоматически фильтрует ботов</p>
+    
+    <div class="quiz-wrapper">
+      <div class="quiz" id="quiz">
+        <div class="quiz__header">
+          <div class="quiz__logo">Q</div>
+          <div class="quiz__title">Умный квиз с антиботом</div>
+          <div class="quiz__progress">
+            <span id="pText">1 / 5</span>
+            <div class="bar"><span id="pBar"></span></div>
+          </div>
+        </div>
+        <div class="quiz__body">
+          <div class="step active" data-step="1">
+            <div class="q">1. Какая у вас сумма долга?</div>
+            <div class="options">
+              <button class="btn-opt" data-name="debt" data-value="до 300 тыс.">До 300 тыс.</button>
+              <button class="btn-opt" data-name="debt" data-value="300–500 тыс.">300–500 тыс.</button>
+              <button class="btn-opt" data-name="debt" data-value="более 500 тыс.">Более 500 тыс.</button>
+            </div>
+          </div>
+
+          <div class="step" data-step="2">
+            <div class="q">2. Есть ли просрочки?</div>
+            <div class="options">
+              <button class="btn-opt" data-name="delay" data-value="нет">Нет</button>
+              <button class="btn-opt" data-name="delay" data-value="менее 3 мес.">Менее 3 мес.</button>
+              <button class="btn-opt" data-name="delay" data-value="более 3 мес.">Более 3 мес.</button>
+            </div>
+          </div>
+
+          <div class="step" data-step="3">
+            <div class="q">3. Работаете официально?</div>
+            <div class="options">
+              <button class="btn-opt" data-name="job" data-value="да">Да</button>
+              <button class="btn-opt" data-name="job" data-value="нет">Нет</button>
+            </div>
+          </div>
+
+          <div class="step" data-step="4">
+            <div class="q">4. Есть ли имущество кроме жилья?</div>
+            <div class="options">
+              <button class="btn-opt" data-name="property" data-value="нет">Нет</button>
+              <button class="btn-opt" data-name="property" data-value="есть, хочу сохранить">Есть, хочу сохранить</button>
+              <button class="btn-opt" data-name="property" data-value="готов продать">Готов продать</button>
+            </div>
+          </div>
+
+          <div class="step" data-step="5">
+            <div class="q">5. Оставьте контакт для результата</div>
+            <div class="lead" id="leadForm">
+              <div class="field">
+                <label>Ваше имя</label>
+                <input id="quizName" class="input" placeholder="Иван">
+              </div>
+              <div class="field">
+                <label>Телефон</label>
+                <input id="quizPhone" class="input" placeholder="+7 900 000-00-00">
+              </div>
+              <!-- HONEYPOT ПОЛЕ (скрытое) -->
+              <input type="text" id="quizHoneypot" style="display: none !important; opacity: 0; position: absolute; left: -9999px;" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="result" id="summaryBox" style="display:none;"></div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn--ghost" id="prevBtn" disabled>← Назад</button>
+            <button class="btn btn--primary" id="nextBtn">Далее →</button>
+          </div>
+          <div class="muted">Ответьте на 5 вопросов, чтобы проверить возможность</div>
+        </div>
+        <div class="footer">
+          <div class="hint">Антибот включён • Поведение анализируется</div>
+          <div class="hint" id="status">Шаг 1 из 5</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Преимущества антибота -->
+  <section class="section" style="background: #f0f5fa; padding: 80px 20px;">
+    <h2>Преимущества умного антибота</h2>
+    <div class="features">
+      <div class="feature">
+        <img src="https://img.icons8.com/color/96/security-shield.png" alt="Защита">
+        <h3>100% защита от ботов</h3>
+        <p>Автоматические скрипты и спам-заявки блокируются в реальном времени</p>
+      </div>
+      <div class="feature">
+        <img src="https://img.icons8.com/color/96/24-hours.png" alt="24/7">
+        <h3>Работает 24/7</h3>
+        <p>Собирайте заявки даже вне рабочего времени с интеллектуальной фильтрацией</p>
+      </div>
+      <div class="feature">
+        <img src="https://img.icons8.com/color/96/analytics.png" alt="Аналитика">
+        <h3>Умная аналитика</h3>
+        <p>Оценка "теплоты" клиента и фильтрация нецелевых обращений</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Промо-блок -->
+  <section class="promo-block">
+    <div class="promo-inner">
+      <div class="promo-title">Идеальное решение для сайтов с РСЯ-трафиком</div>
+      <ul class="promo-list">
+        <li><b>Защита от 80% ботов</b> - автоматическая фильтрация спам-трафика</li>
+        <li><b>Экономия бюджета</b> - боты не тратят деньги на рекламу</li>
+        <li><b>Чистые лиды</b> - в CRM попадают только реальные клиенты</li>
+        <li><b>Работа 24/7</b> - обработка заявок даже ночью и в выходные</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Чат-консультант -->
+  <section class="section">
+    <h2>AI-консультант для обработки заявок</h2>
+    <p style="text-align: center; margin-bottom: 30px; font-size: 18px;">Умный помощник отвечает на вопросы и собирает контакты 24/7</p>
+
+    <div class="chat-container">
+      <div class="chat-header">
+        <img src="https://i.imgur.com/VnE8ZUa.png" alt="Ассистент">
+        <div class="title">AI-консультант Анна</div>
+      </div>
+      <div class="chat-messages" id="chat"></div>
+      <div id="typingIndicator" style="display:none; padding:10px 20px; font-size:14px; color:#0a3d62;">
+        Анна печатает<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </div>
+      <div class="chat-suggestions">
+        <button onclick="quickSend('Хочу узнать подробности')">Узнать подробности</button>
+        <button onclick="quickSend('Как работает антибот?')">Про антибот</button>
+        <button onclick="quickSend('Хочу подключить')">Подключить</button>
+      </div>
+      <div class="chat-input">
+        <button onclick="startVoice()" title="Говорить">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M192 256c0 17.7-14.3 32-32 32s-32-14.3-32-32V128c0-17.7 14.3-32 32-32s32 14.3 32 32V256zM160 320c35.3 0 64-28.7 64-64V128a64 64 0 1 0-128 0V256c0 35.3 28.7 64 64 64zm56 32H104c-13.3 0-24 10.7-24 24s10.7 24 24 24h24v56c0 13.3 10.7 24 24 24s24-10.7 24-24V400h24c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
+        </button>
+        <input type="text" id="chatInput" placeholder="Введите ваш вопрос...">
+        <button onclick="sendMessage()">Отправить</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025. Умный квиз с антибот-защитой</p>
+    <p style="margin-top: 10px; font-size: 14px; opacity: 0.8;">Технологии AI и машинного обучения для вашего бизнеса</p>
+  </footer>
+
+  <!-- Overlay + Form + Thanks -->
+  <div id="leadOverlay"></div>
+
+  <div id="leadPopup">
+    <h3 id="leadTitle">Оставьте заявку на демонстрацию</h3>
+    <input id="leadName" placeholder="Ваше имя">
+    <input id="leadPhone" placeholder="+7 (___) ___-__-__">
+    <button id="leadSubmitBtn">Получить демонстрацию</button>
+  </div>
+
+  <div id="leadThanks">
+    <div style="font-size: 18px; padding: 20px;">✅ Спасибо за заявку!<br>Мы свяжемся с вами в течение 15 минут</div>
+  </div>
+
+<script src="https://unpkg.com/imask"></script>
+<script>
+  // === ВСЕ СЕРВИСНЫЕ URL ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ ===
+  const OPENAI_PROXY_URL = "https://openai-gpt-proxy-mcnj.onrender.com/gpt";
+  const LEAD_URL = "https://openai-gpt-proxy-mcnj.onrender.com/lead";
+  const QUIZ_URL = "https://openai-gpt-proxy-mcnj.onrender.com/quiz";
+
+  // === ВЕСЬ JAVASCRIPT КОД ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ ===
+  let messages = [];
+  const chatBox = document.getElementById("chat");
+  const chatInput = document.getElementById("chatInput");
+
+  // userId / UTM
+  let userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
+  localStorage.setItem("userId", userId);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const utm_source = urlParams.get("utm_source") || "";
+  const utm_content = urlParams.get("utm_content") || "";
+
+  function appendMessage(text, fromUser=false){
+    const div = document.createElement("div");
+    div.className = "message " + (fromUser ? "user" : "bot");
+    div.textContent = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // === Живой набор Анны ===
+  async function typeMessage(text) {
+    const typingIndicator = document.getElementById("typingIndicator");
+    typingIndicator.style.display = "block";
+
+    const delay = Math.min(2500, 500 + text.length * 25); 
+    await new Promise(r => setTimeout(r, delay));
+
+    typingIndicator.style.display = "none";
+    appendMessage(text, false);
+    messages.push({ role: "assistant", content: text });
+  }
+
+  // === Основная функция чата ===
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    appendMessage(text, true);
+    messages.push({ role: "user", content: text });
+    chatInput.value = "";
+
+    const now = Date.now();
+    window.lastUserMessageTime = window.lastUserMessageTime || now;
+    const responseDelay = now - window.lastUserMessageTime;
+    window.lastUserMessageTime = now;
+
+    try {
+      const res = await fetch(OPENAI_PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages, userId, mode: "bankruptcy" })
+      });
+      const data = await res.json();
+      let reply = data.choices?.[0]?.message?.content || "Ошибка";
+
+      // Антибот: если отвечает слишком быстро, форму не открываем
+      if (responseDelay < 1000) {
+        reply = reply.replace(/\[openLeadForm\]/gi, "");
+      }
+
+      // ловим [openLeadForm] или triggerForm
+      if (/\[openLeadForm\]/i.test(reply) || data.triggerForm) {
+        const clean = reply.replace(/\[openLeadForm\]/gi, "").trim();
+        document.getElementById("leadTitle").innerText = clean || "Оставьте заявку на консультацию";
+        openLeadForm();
+        reply = clean;
+      }
+
+      // Анна "печатает" живо
+      await typeMessage(reply);
+
+      // === Проверка на [nextMessage] ===
+      if (reply.includes("[nextMessage]")) {
+        const parts = reply.split("[nextMessage]").map(t => t.trim()).filter(Boolean);
+        if (parts.length > 1) {
+          const first = parts[0];
+          const second = parts[1];
+
+          chatBox.lastChild.textContent = first;
+
+          const thinkingDelay = 1500 + Math.random() * 1000;
+          setTimeout(async () => {
+            await typeMessage(second);
+          }, thinkingDelay);
+        }
+      }
+
+    } catch (e) {
+      appendMessage("Ошибка соединения", false);
+    }
+  }
+
+  function quickSend(text){
+    chatInput.value=text;
+    sendMessage();
+  }
+
+  function startVoice(){
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "ru-RU";
+    recognition.start();
+    recognition.onresult = (e)=>{
+      const text = e.results[0][0].transcript;
+      chatInput.value=text;
+      sendMessage();
+    };
+    recognition.onerror=()=>alert("Ошибка распознавания");
+  }
+
+  chatInput.addEventListener("keydown", e=>{
+    if(e.key==="Enter" && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  window.addEventListener("load",()=>{
+    setTimeout(()=>{
+      if(messages.length===0){
+        appendMessage("Здравствуйте! Я AI-консультант Анна. Расскажу про умный квиз с антибот-защитой. Чем могу помочь?", false);
+      }
+    },1000);
+  });
+
+  // === Форма ===
+  IMask(document.getElementById("leadPhone"), { mask: "+{7} (000) 000-00-00" });
+
+  function openLeadForm(){
+    document.getElementById("leadOverlay").style.display="block";
+    document.getElementById("leadPopup").style.display="block";
+  }
+
+  document.getElementById("leadOverlay").addEventListener("click", closeLeadForms);
+  function closeLeadForms(){
+    document.getElementById("leadOverlay").style.display="none";
+    document.getElementById("leadPopup").style.display="none";
+    document.getElementById("leadThanks").style.display="none";
+  }
+
+  document.getElementById("leadSubmitBtn").addEventListener("click", async ()=>{
+    const name = document.getElementById("leadName").value.trim();
+    let phone = document.getElementById("leadPhone").value.replace(/\D/g,""); 
+
+    if(!name || phone.length < 10){ 
+      alert("Введите имя и корректный номер телефона"); 
+      return; 
+    }
+
+    phone = "+7" + phone.slice(-10);
+
+    const payload = { name, phone, userId, messages, utm_source, utm_content };
+
+    document.getElementById("leadPopup").style.display="none";
+    document.getElementById("leadThanks").style.display="block";
+
+    setTimeout(closeLeadForms, 3000);
+
+    try {
+      await fetch(LEAD_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+    }catch(e){ console.error("Ошибка отправки",e); }
+  });
+
+  // === КОД КВИЗА ОСТАЕТСЯ ПОЛНОСТЬЮ БЕЗ ИЗМЕНЕНИЙ ===
+  let step = 1;
+  const total = 5;
+  const answers = {};
+  const events = [];
+  let last = Date.now();
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const steps = $$(".step");
+  const pText = $("#pText");
+  const pBar = $("#pBar");
+  const status = $("#status");
+
+  function showStep(n){
+    steps.forEach(s=>s.classList.remove("active"));
+    steps[n-1].classList.add("active");
+    pText.textContent = n+" / "+total;
+    pBar.style.width = ((n-1)/(total-1))*100+"%";
+    status.textContent = "Шаг "+n+" из "+total;
+    $("#prevBtn").disabled = n===1;
+    $("#nextBtn").textContent = n<total ? "Далее →" : "Отправить";
+  }
+  function pushEvent(type,label){
+    const now=Date.now();
+    events.push({type,label,intervalMs:now-last,timestamp:now});
+    last=now;
+  }
+
+  $$(".btn-opt").forEach(btn=>{
+    btn.onclick=()=>{
+      const name=btn.dataset.name,val=btn.dataset.value;
+      btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      answers[name]=val;
+      pushEvent("click",name+":"+val);
+      if(step<4) setTimeout(()=>showStep(++step),200);
+    };
+  });
+  $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);}
+  $("#nextBtn").onclick=async()=>{
+    if(step<4){showStep(++step);return;}
+    if(step===4){showStep(++step);}
+    else{
+      const name=$("#quizName").value.trim();
+      let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
+      const honeypot=$("#quizHoneypot").value;
+      if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
+      if(!name||phone.length<12)return alert("Введите корректные данные");
+
+      $("#nextBtn").disabled=true;$("#nextBtn").textContent="Отправляем…";
+
+      const userId=localStorage.getItem("userId")||("user_"+Math.random().toString(36).slice(2,10));
+      localStorage.setItem("userId",userId);
+      
+      const payload={userId,answers,events,phone,honeypot,durationMs:Date.now()-events[0]?.timestamp||0};
+      try{
+        const r=await fetch(QUIZ_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        const d=await r.json();
+        console.log("ANTIBOT DEBUG:", d);
+        console.log("Score:", d.score, "Action:", d.action);
+        
+        const verdict=d.action==="allow"?"✅ Подходит, менеджер свяжется":
+          d.action==="challenge"?"⚠️ Нужна проверка":"⛔️ Похоже, это бот";
+        $("#summaryBox").style.display="block";
+        $("#summaryBox").textContent=verdict;
+        
+        if(d.action !== "deny") {
+          const answersSummary = Object.entries(answers).map(([q,a]) => `${q}: ${a}`).join("; ");
+          await fetch(LEAD_URL,{method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+              name,
+              phone,
+              userId,
+              source: "quiz",
+              no_summary: true,
+              answersSummary: answersSummary,
+              messages: []
+            })});
+        }
+        $("#nextBtn").textContent="Готово ✔";
+      }catch(e){alert("Ошибка соединения");$("#nextBtn").textContent="Отправить";}
+      finally{$("#nextBtn").disabled=false;}
+    }
+  };
+  showStep(1);
+
+  // === МАСКА ТЕЛЕФОНА И DETECTOR PASTE ===
+  const phoneInput = document.getElementById("quizPhone");
+  const mask = IMask(phoneInput, {
+    mask: '+{7} (000) 000-00-00',
+    lazy: false,
+    placeholderChar: '_'
+  });
+
+  phoneInput.addEventListener('input', () => {
+    const digits = phoneInput.value.replace(/\D/g, '');
+    if (digits[1] && digits[1] !== '9') {
+      const corrected = '+7 (9' + digits.slice(2, 11).padEnd(9, '_');
+      phoneInput.value = corrected.replace(/_/g, '');
+      mask.updateValue();
+    }
+  });
+
+  phoneInput.addEventListener('paste', (e) => {
+    pushEvent("paste", "phone");
+  });
+</script>
+</body>
+</html>
