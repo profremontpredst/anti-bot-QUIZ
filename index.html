@@ -52,8 +52,20 @@
 .deny{background:#ffeaea;color:#d9534f;}
 .footer{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e7eef7;background:#fcfdff;}
 .hint{font-size:12px;color:#6b7a90}
-@media(max-width:680px){.options{grid-template-columns:1fr}.lead{grid-template-columns:1fr}.quiz__header{flex-wrap:wrap;gap:8px}.quiz__progress{width:100%}.bar{flex:1}}
+.debug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; margin-bottom: 16px; }
+.debug-section { margin-bottom: 12px; }
+.debug-title { font-weight: 600; margin-bottom: 6px; color: #0a3d62; }
+.debug-line { margin-bottom: 4px; }
+.debug-status { margin-top: 12px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; }
 
+@media(max-width:680px){
+  .options{grid-template-columns:1fr}
+  .lead{grid-template-columns:1fr}
+  .quiz__header{flex-wrap:wrap;gap:8px}
+  .quiz__progress{width:100%}
+  .bar{flex:1}
+  .debug-grid { grid-template-columns: 1fr; }
+}
     /* Chat block */
     .chat-container {
       max-width: 900px;
@@ -209,7 +221,7 @@
         <div class="quiz__logo">AU</div>
         <div class="quiz__title">Проверка на банкротство</div>
         <div class="quiz__progress">
-          <span id="pText">1 / 5</span>
+          <span id="pText">1 / 6</span>
           <div class="bar"><span id="pBar"></span></div>
         </div>
       </div>
@@ -266,6 +278,66 @@
           <div class="result" id="summaryBox" style="display:none;"></div>
         </div>
 
+        <!-- НОВЫЙ ШАГ 6 - РЕЗУЛЬТАТЫ АНТИБОТА -->
+        <div class="step" data-step="6">
+          <div class="q">Результат проверки</div>
+          
+          <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
+            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">🤖 ДАННЫЕ АНТИБОТ-АНАЛИЗА</div>
+            
+            <div class="debug-grid">
+              <!-- Тайминги -->
+              <div class="debug-section">
+                <div class="debug-title">⏱ Тайминги</div>
+                <div class="debug-line" id="debugDuration">• Общее время: 0 сек</div>
+                <div class="debug-line" id="debugAvgInterval">• Средний интервал: 0 мс</div>
+                <div class="debug-line" id="debugFastClicks">• Быстрые клики: 0</div>
+              </div>
+              
+              <!-- События -->
+              <div class="debug-section">
+                <div class="debug-title">🎯 События</div>
+                <div class="debug-line" id="debugClicks">• Клики: 0</div>
+                <div class="debug-line" id="debugPaste">• Вставка в телефон: НЕТ</div>
+                <div class="debug-line" id="debugFakeClick">• Невидимая кнопка: НЕТ</div>
+              </div>
+              
+              <!-- Оценка -->
+              <div class="debug-section">
+                <div class="debug-title">📊 Оценка</div>
+                <div class="debug-line" id="debugHeuristic">• Эвристики: 0/100</div>
+                <div class="debug-line" id="debugAI">• AI-анализ: 0/100</div>
+                <div class="debug-line" id="debugVerdict">• Вердикт: —</div>
+              </div>
+              
+              <!-- Причины -->
+              <div class="debug-section">
+                <div class="debug-title">🔍 Причины</div>
+                <div class="debug-line" id="debugReasons">• Анализ...</div>
+              </div>
+            </div>
+            
+            <!-- Статус -->
+            <div id="debugStatus" class="debug-status">
+              ⏳ Проверяем поведение...
+            </div>
+          </div>
+
+          <!-- Кнопки действий -->
+          <div class="controls" style="margin-top:20px; justify-content:center; gap:16px;">
+            <button class="btn" onclick="restartQuiz()" style="background:#f1f5f9; color:#475569;">
+              🔄 Заполнить ещё раз
+            </button>
+            <button class="btn btn--primary" onclick="goToPricing()">
+              🚀 Попробовать бесплатно
+            </button>
+          </div>
+          
+          <div class="muted" style="text-align:center; margin-top:12px;">
+            Это демо-версия. Получите полный доступ к антиботу для вашего сайта
+          </div>
+        </div>
+
         <div class="controls">
           <button class="btn btn--ghost" id="prevBtn" disabled>← Назад</button>
           <button class="btn btn--primary" id="nextBtn">Далее →</button>
@@ -274,7 +346,7 @@
       </div>
       <div class="footer">
         <div class="hint">Антибот включён • Поведение анализируется</div>
-        <div class="hint" id="status">Шаг 1 из 5</div>
+        <div class="hint" id="status">Шаг 1 из 6</div>
       </div>
     </div>
   </div>
@@ -492,9 +564,9 @@
     }catch(e){ console.error("Ошибка отправки",e); }
   });
 
-  // === КОД КВИЗА ОСТАЕТСЯ ПОЛНОСТЬЮ БЕЗ ИЗМЕНЕНИЙ ===
+  // === КОД КВИЗА С ДОБАВЛЕНИЕМ 6-ГО ШАГА ===
   let step = 1;
-  const total = 5;
+  const total = 6; // Теперь 6 шагов!
   const answers = {};
   const events = [];
   let last = Date.now();
@@ -515,10 +587,82 @@
     $("#prevBtn").disabled = n===1;
     $("#nextBtn").textContent = n<total ? "Далее →" : "Отправить";
   }
+
   function pushEvent(type,label){
     const now=Date.now();
     events.push({type,label,intervalMs:now-last,timestamp:now});
     last=now;
+  }
+
+  // Функция обновления debug-информации
+  function updateDebugInfo(quizData, antibotResult) {
+    // Тайминги
+    const duration = quizData.durationMs / 1000;
+    const intervals = quizData.events.map(e => e.intervalMs || 0);
+    const avgInterval = intervals.length ? intervals.reduce((a, b) => a + b) / intervals.length : 0;
+    const fastClicks = quizData.events.filter(e => e.intervalMs < 150).length;
+    
+    document.getElementById('debugDuration').textContent = `• Общее время: ${duration.toFixed(1)} сек`;
+    document.getElementById('debugAvgInterval').textContent = `• Средний интервал: ${Math.round(avgInterval)} мс`;
+    document.getElementById('debugFastClicks').textContent = `• Быстрые клики: ${fastClicks}`;
+    
+    // События
+    const clicks = quizData.events.filter(e => e.type === 'click' && e.label).length;
+    const hasPaste = quizData.events.some(e => e.type === 'paste');
+    const hasFakeClick = quizData.events.some(e => e.type === 'fake_click');
+    
+    document.getElementById('debugClicks').textContent = `• Клики: ${clicks}`;
+    document.getElementById('debugPaste').textContent = `• Вставка в телефон: ${hasPaste ? 'ДА ⚠️' : 'НЕТ ✅'}`;
+    document.getElementById('debugFakeClick').textContent = `• Невидимая кнопка: ${hasFakeClick ? 'НАЖАТА 🚨' : 'НЕТ ✅'}`;
+    
+    // Оценка антибота
+    if (antibotResult) {
+      document.getElementById('debugHeuristic').textContent = `• Эвристики: ${antibotResult.score || 0}/100`;
+      document.getElementById('debugAI').textContent = `• AI-анализ: ${antibotResult.aiScore || 'N/A'}`;
+      document.getElementById('debugVerdict').textContent = `• Вердикт: ${antibotResult.action?.toUpperCase() || '—'}`;
+      document.getElementById('debugReasons').textContent = `• ${antibotResult.reason || 'Анализ завершён'}`;
+      
+      // Статус
+      const statusEl = document.getElementById('debugStatus');
+      if (antibotResult.action === 'allow') {
+        statusEl.innerHTML = '✅ <strong>ЧЕЛОВЕК</strong> - естественное поведение';
+        statusEl.style.background = '#ecfdf5';
+        statusEl.style.color = '#065f46';
+      } else if (antibotResult.action === 'challenge') {
+        statusEl.innerHTML = '⚠️ <strong>ПОДОЗРИТЕЛЬНО</strong> - требуется проверка';
+        statusEl.style.background = '#fffbeb';
+        statusEl.style.color = '#92400e';
+      } else {
+        statusEl.innerHTML = '⛔️ <strong>БОТ</strong> - обнаружены бот-признаки';
+        statusEl.style.background = '#fef2f2';
+        statusEl.style.color = '#dc2626';
+      }
+    }
+  }
+
+  // Функция перезапуска квиза
+  function restartQuiz() {
+    // Сбрасываем всё
+    step = 1;
+    answers = {};
+    events.length = 0;
+    last = Date.now();
+    
+    // Очищаем выбранные ответы
+    document.querySelectorAll('.btn-opt').forEach(btn => btn.classList.remove('active'));
+    
+    // Очищаем поля ввода
+    document.getElementById('quizName').value = '';
+    document.getElementById('quizPhone').value = '';
+    document.getElementById('quizHoneypot').value = '';
+    
+    // Показываем первый шаг
+    showStep(1);
+  }
+
+  // Переход на сайт
+  function goToPricing() {
+    window.open('https://твой-сайт.ру#try', '_blank');
   }
 
   $$(".btn-opt").forEach(btn=>{
@@ -531,33 +675,35 @@
       if(step<4) setTimeout(()=>showStep(++step),200);
     };
   });
+
   $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);}
+
   $("#nextBtn").onclick=async()=>{
     if(step<4){showStep(++step);return;}
     if(step===4){showStep(++step);}
-    else{
+    else if(step === 5){
       const name=$("#quizName").value.trim();
       let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
       const honeypot=$("#quizHoneypot").value;
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
       if(!name||phone.length<12)return alert("Введите корректные данные");
 
-      $("#nextBtn").disabled=true;$("#nextBtn").textContent="Отправляем…";
+      $("#nextBtn").disabled=true;
+      $("#nextBtn").textContent="Отправляем…";
 
       const userId=localStorage.getItem("userId")||("user_"+Math.random().toString(36).slice(2,10));
       localStorage.setItem("userId",userId);
       
       const payload={userId,answers,events,phone,honeypot,durationMs:Date.now()-events[0]?.timestamp||0};
+      
       try{
         const r=await fetch(QUIZ_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
         const d=await r.json();
         console.log("ANTIBOT DEBUG:", d);
-        console.log("Score:", d.score, "Action:", d.action);
         
-        const verdict=d.action==="allow"?"✅ Подходит, юрист свяжется":
-          d.action==="challenge"?"⚠️ Нужна проверка":"⛔️ Похоже, это бот";
-        $("#summaryBox").style.display="block";
-        $("#summaryBox").textContent=verdict;
+        // ПОКАЗЫВАЕМ ШАГ 6 С РЕЗУЛЬТАТАМИ
+        showStep(6);
+        updateDebugInfo(payload, d);
         
         if(d.action !== "deny") {
           const answersSummary = Object.entries(answers).map(([q,a]) => `${q}: ${a}`).join("; ");
@@ -573,10 +719,16 @@
             })});
         }
         $("#nextBtn").textContent="Готово ✔";
-      }catch(e){alert("Ошибка соединения");$("#nextBtn").textContent="Отправить";}
-      finally{$("#nextBtn").disabled=false;}
+      }catch(e){
+        alert("Ошибка соединения");
+        $("#nextBtn").textContent="Отправить";
+      }
+      finally{
+        $("#nextBtn").disabled=false;
+      }
     }
   };
+
   showStep(1);
 
   // === МАСКА ТЕЛЕФОНА И DETECTOR PASTE ===
