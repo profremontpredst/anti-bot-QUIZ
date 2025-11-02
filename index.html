@@ -618,7 +618,7 @@
     // Оценка антибота
     if (antibotResult) {
       document.getElementById('debugHeuristic').textContent = `• Эвристики: ${antibotResult.score || 0}/100`;
-      document.getElementById('debugAI').textContent = `• AI-анализ: ${antibotResult.aiScore || 'N/A'}`;
+      document.getElementById('debugAI').textContent = `• AI-анализ: ${antibotResult.score ? '✅' : 'N/A'}`;
       document.getElementById('debugVerdict').textContent = `• Вердикт: ${antibotResult.action?.toUpperCase() || '—'}`;
       document.getElementById('debugReasons').textContent = `• ${antibotResult.reason || 'Анализ завершён'}`;
       
