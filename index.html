@@ -621,50 +621,54 @@
   }
 
   // Функция обновления debug-информации
-  function updateDebugInfo(quizData, antibotResult) {
-    // Тайминги
-    const duration = quizData.durationMs / 1000;
-    const intervals = quizData.events.map(e => e.intervalMs || 0);
-    const avgInterval = intervals.length ? intervals.reduce((a, b) => a + b) / intervals.length : 0;
-    const fastClicks = quizData.events.filter(e => e.intervalMs < 150).length;
+function updateDebugInfo(quizData, antibotResult) {
+  // Тайминги
+  const duration = quizData.durationMs / 1000;
+  const intervals = quizData.events.map(e => e.intervalMs || 0);
+  const avgInterval = intervals.length ? intervals.reduce((a, b) => a + b) / intervals.length : 0;
+  const fastClicks = quizData.events.filter(e => e.intervalMs < 150).length;
+  
+  document.getElementById('debugDuration').textContent = `• Общее время: ${duration.toFixed(1)} сек`;
+  document.getElementById('debugAvgInterval').textContent = `• Средний интервал: ${Math.round(avgInterval)} мс`;
+  document.getElementById('debugFastClicks').textContent = `• Быстрые клики: ${fastClicks}`;
+  
+  // События
+  const clicks = quizData.events.filter(e => e.type === 'click' && e.label).length;
+  const hasPaste = quizData.events.some(e => e.type === 'paste');
+  
+  document.getElementById('debugClicks').textContent = `• Клики: ${clicks}`;
+  document.getElementById('debugPaste').textContent = `• Вставка в телефон: ${hasPaste ? 'ДА ⚠️' : 'НЕТ ✅'}`;
+  document.getElementById('debugFakeClick').textContent = `• Хонипот: ${quizData.honeypot ? 'ЗАПОЛНЕН 🚨' : 'НЕТ ✅'}`;
+  
+  // Поведенческие данные
+  const mousePoints = quizData.behaviorData?.mouseMovements?.length || 0;
+  const questionTimes = quizData.behaviorData?.questionTimings?.length || 0;
+  const clickPoints = quizData.behaviorData?.clickPositions?.length || 0;
+  
+  document.getElementById('debugHeuristic').textContent = `• Движения мыши: ${mousePoints} точек`;
+  document.getElementById('debugAI').textContent = `• Время на вопросы: ${questionTimes} записей`;
+  document.getElementById('debugVerdict').textContent = `• Позиции кликов: ${clickPoints} точек`;
+  
+  // Оценка антибота
+  if (antibotResult) {
+    document.getElementById('debugReasons').textContent = `• ${antibotResult.reason || 'Анализ завершён'}`;
     
-    document.getElementById('debugDuration').textContent = `• Общее время: ${duration.toFixed(1)} сек`;
-    document.getElementById('debugAvgInterval').textContent = `• Средний интервал: ${Math.round(avgInterval)} мс`;
-    document.getElementById('debugFastClicks').textContent = `• Быстрые клики: ${fastClicks}`;
-    
-    // События
-    const clicks = quizData.events.filter(e => e.type === 'click' && e.label).length;
-    const hasPaste = quizData.events.some(e => e.type === 'paste');
-    const hasFakeClick = quizData.events.some(e => e.type === 'fake_click');
-    
-    document.getElementById('debugClicks').textContent = `• Клики: ${clicks}`;
-    document.getElementById('debugPaste').textContent = `• Вставка в телефон: ${hasPaste ? 'ДА ⚠️' : 'НЕТ ✅'}`;
-    document.getElementById('debugFakeClick').textContent = `• Невидимая кнопка: ${hasFakeClick ? 'НАЖАТА 🚨' : 'НЕТ ✅'}`;
-    
-    // Оценка антибота
-    if (antibotResult) {
-      document.getElementById('debugHeuristic').textContent = `• Эвристики: ${antibotResult.score || 0}/100`;
-      document.getElementById('debugAI').textContent = `• AI-анализ: ${antibotResult.score ? '✅' : 'N/A'}`;
-      document.getElementById('debugVerdict').textContent = `• Вердикт: ${antibotResult.action?.toUpperCase() || '—'}`;
-      document.getElementById('debugReasons').textContent = `• ${antibotResult.reason || 'Анализ завершён'}`;
-      
-      // Статус
-      const statusEl = document.getElementById('debugStatus');
-      if (antibotResult.action === 'allow') {
-        statusEl.innerHTML = '✅ <strong>ЧЕЛОВЕК</strong> - естественное поведение';
-        statusEl.style.background = '#ecfdf5';
-        statusEl.style.color = '#065f46';
-      } else if (antibotResult.action === 'challenge') {
-        statusEl.innerHTML = '⚠️ <strong>ПОДОЗРИТЕЛЬНО</strong> - требуется проверка';
-        statusEl.style.background = '#fffbeb';
-        statusEl.style.color = '#92400e';
-      } else {
-        statusEl.innerHTML = '⛔️ <strong>БОТ</strong> - обнаружены бот-признаки';
-        statusEl.style.background = '#fef2f2';
-        statusEl.style.color = '#dc2626';
-      }
+    const statusEl = document.getElementById('debugStatus');
+    if (antibotResult.action === 'allow') {
+      statusEl.innerHTML = `✅ <strong>ЧЕЛОВЕК</strong> - оценка ${antibotResult.score}/100`;
+      statusEl.style.background = '#ecfdf5';
+      statusEl.style.color = '#065f46';
+    } else if (antibotResult.action === 'challenge') {
+      statusEl.innerHTML = `⚠️ <strong>ПОДОЗРИТЕЛЬНО</strong> - оценка ${antibotResult.score}/100`;
+      statusEl.style.background = '#fffbeb';
+      statusEl.style.color = '#92400e';
+    } else {
+      statusEl.innerHTML = `⛔️ <strong>БОТ</strong> - оценка ${antibotResult.score}/100`;
+      statusEl.style.background = '#fef2f2';
+      statusEl.style.color = '#dc2626';
     }
   }
+}
 
   // Функция перезапуска квиза
   function restartQuiz() {
