@@ -409,6 +409,30 @@
   const utm_source = urlParams.get("utm_source") || "";
   const utm_content = urlParams.get("utm_content") || "";
 
+  // === СБОР ПОВЕДЕНЧЕСКИХ ДАННЫХ ===
+  window.mouseMovements = [];
+  window.questionTimings = [];
+  window.clickPositions = [];
+  let questionStartTime = Date.now();
+
+  document.addEventListener('mousemove', (e) => {
+    window.mouseMovements.push({x: e.clientX, y: e.clientY, timestamp: Date.now()});
+  });
+
+  document.addEventListener('click', (e) => {
+    window.clickPositions.push({x: e.clientX, y: e.clientY, timestamp: Date.now()});
+  });
+
+  function startQuestionTimer() { questionStartTime = Date.now(); }
+  function recordQuestionTime() {
+    if (questionStartTime) {
+      window.questionTimings.push({question: step, timeSpent: Date.now() - questionStartTime});
+    }
+  }
+
+  // Запускаем таймер
+  startQuestionTimer();
+
   function appendMessage(text, fromUser=false){
     const div = document.createElement("div");
     div.className = "message " + (fromUser ? "user" : "bot");
@@ -579,6 +603,7 @@
   const status = $("#status");
 
   function showStep(n){
+    if (step > 1) recordQuestionTime();
     steps.forEach(s=>s.classList.remove("active"));
     steps[n-1].classList.add("active");
     pText.textContent = n+" / "+total;
@@ -586,6 +611,7 @@
     status.textContent = "Шаг "+n+" из "+total;
     $("#prevBtn").disabled = n===1;
     $("#nextBtn").textContent = n<total ? "Далее →" : "Отправить";
+    startQuestionTimer();
   }
 
   function pushEvent(type,label){
@@ -694,7 +720,22 @@
       const userId=localStorage.getItem("userId")||("user_"+Math.random().toString(36).slice(2,10));
       localStorage.setItem("userId",userId);
       
-      const payload={userId,answers,events,phone,honeypot,durationMs:Date.now()-events[0]?.timestamp||0};
+      const behaviorData = {
+        mouseMovements: window.mouseMovements || [],
+        questionTimings: window.questionTimings || [],
+        clickPositions: window.clickPositions || [],
+        userAgent: navigator.userAgent
+      };
+
+      const payload = {
+        userId, 
+        answers, 
+        events, 
+        phone, 
+        honeypot, 
+        durationMs: Date.now() - events[0]?.timestamp || 0,
+        behaviorData
+      };
       
       try{
         const r=await fetch(QUIZ_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
