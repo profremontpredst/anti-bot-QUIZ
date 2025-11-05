@@ -325,9 +325,6 @@
 
           <!-- Кнопки действий -->
           <div class="controls" style="margin-top:20px; justify-content:center; gap:16px;">
-            <button class="btn" onclick="restartQuiz()" style="background:#f1f5f9; color:#475569;">
-              🔄 Заполнить ещё раз
-            </button>
             <button class="btn btn--primary" onclick="goToPricing()">
               🚀 Попробовать бесплатно
             </button>
@@ -603,16 +600,24 @@
   const status = $("#status");
 
   function showStep(n){
-    if (step > 1) recordQuestionTime();
-    steps.forEach(s=>s.classList.remove("active"));
-    steps[n-1].classList.add("active");
-    pText.textContent = n+" / "+total;
-    pBar.style.width = ((n-1)/(total-1))*100+"%";
-    status.textContent = "Шаг "+n+" из "+total;
-    $("#prevBtn").disabled = n===1;
+  if (step > 1) recordQuestionTime();
+  steps.forEach(s=>s.classList.remove("active"));
+  steps[n-1].classList.add("active");
+  pText.textContent = n+" / "+total;
+  pBar.style.width = ((n-1)/(total-1))*100+"%";
+  status.textContent = "Шаг "+n+" из "+total;
+  $("#prevBtn").disabled = n===1;
+  
+  // СКРЫВАЕМ КНОПКУ НА ШАГЕ 6
+  if(n === 6) {
+    $("#nextBtn").style.display = "none";
+  } else {
+    $("#nextBtn").style.display = "inline-flex";
     $("#nextBtn").textContent = n<total ? "Далее →" : "Отправить";
-    startQuestionTimer();
   }
+  
+  startQuestionTimer();
+}
 
   function pushEvent(type,label){
     const now=Date.now();
@@ -696,15 +701,15 @@ function updateDebugInfo(quizData, antibotResult) {
   }
 
   $$(".btn-opt").forEach(btn=>{
-    btn.onclick=()=>{
-      const name=btn.dataset.name,val=btn.dataset.value;
-      btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      answers[name]=val;
-      pushEvent("click",name+":"+val);
-      if(step<4) setTimeout(()=>showStep(++step),200);
-    };
-  });
+  btn.onclick=()=>{
+    const name=btn.dataset.name,val=btn.dataset.value;
+    btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    answers[name]=val;
+    pushEvent("click",name+":"+val);
+    if(step<5) setTimeout(()=>showStep(++step),200);
+  };
+});
 
   $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);}
 
