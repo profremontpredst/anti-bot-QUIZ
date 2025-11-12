@@ -723,9 +723,17 @@ function updateDebugInfo(quizData, antibotResult) {
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
       if(!name||phone.length<12)return alert("Введите корректные данные");
 
-      $("#nextBtn").disabled=true;
-      $("#nextBtn").textContent="Отправляем…";
+      // МГНОВЕННО показываем спасибо на шаге 5
+      const quizBody = document.querySelector('.quiz__body');
+      quizBody.innerHTML = `
+        <div style="text-align:center;padding:60px 20px;">
+          <img src="https://i.ibb.co/V0RX3KZ7/image.png" alt="Спасибо" style="width:120px;height:120px;border-radius:50%;margin-bottom:20px;object-fit:cover;">
+          <div style="font-size:24px;font-weight:700;color:#0a3d62;margin-bottom:10px;">Спасибо за заявку!</div>
+          <div style="font-size:16px;color:#6b7a90;">Скоро свяжусь с вами для консультации</div>
+        </div>
+      `;
 
+      // ФОНГОМ делаем антибот проверку и показываем отчет
       const userId=localStorage.getItem("userId")||("user_"+Math.random().toString(36).slice(2,10));
       localStorage.setItem("userId",userId);
       
@@ -751,9 +759,11 @@ function updateDebugInfo(quizData, antibotResult) {
         const d=await r.json();
         console.log("ANTIBOT DEBUG:", d);
         
-        // ПОКАЗЫВАЕМ ШАГ 6 С РЕЗУЛЬТАТАМИ
-        showStep(6);
-        updateDebugInfo(payload, d);
+        // Через 3 секунды показываем шаг 6 с отчетом
+        setTimeout(() => {
+          showStep(6);
+          updateDebugInfo(payload, d);
+        }, 3000);
         
         if(d.action !== "deny") {
           const answersSummary = Object.entries(answers).map(([q,a]) => `${q}: ${a}`).join("; ");
@@ -768,13 +778,13 @@ function updateDebugInfo(quizData, antibotResult) {
               messages: []
             })});
         }
-        $("#nextBtn").textContent="Готово ✔";
       }catch(e){
-        alert("Ошибка соединения");
-        $("#nextBtn").textContent="Отправить";
-      }
-      finally{
-        $("#nextBtn").disabled=false;
+        console.error("Ошибка соединения", e);
+        // В случае ошибки всё равно показываем отчет
+        setTimeout(() => {
+          showStep(6);
+          updateDebugInfo(payload, {action: "error", reason: "Ошибка соединения"});
+        }, 3000);
       }
     }
   };
