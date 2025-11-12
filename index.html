@@ -723,13 +723,13 @@ function updateDebugInfo(quizData, antibotResult) {
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
       if(!name||phone.length<12)return alert("Введите корректные данные");
 
-      // МГНОВЕННО показываем спасибо на шаге 5
+      // МГНОВЕННО показываем анализ на шаге 5
       const quizBody = document.querySelector('.quiz__body');
       quizBody.innerHTML = `
         <div style="text-align:center;padding:60px 20px;">
-          <img src="https://i.ibb.co/V0RX3KZ7/image.png" alt="Спасибо" style="width:120px;height:120px;border-radius:50%;margin-bottom:20px;object-fit:cover;">
-          <div style="font-size:24px;font-weight:700;color:#0a3d62;margin-bottom:10px;">Спасибо за заявку!</div>
-          <div style="font-size:16px;color:#6b7a90;">Скоро свяжусь с вами для консультации</div>
+          <img src="https://i.ibb.co/V0RX3KZ7/image.png" alt="Анализ" style="width:120px;height:120px;border-radius:50%;margin-bottom:20px;object-fit:cover;">
+          <div style="font-size:24px;font-weight:700;color:#0a3d62;margin-bottom:10px;">Идёт анализ вашего сайта</div>
+          <div style="font-size:16px;color:#6b7a90;">Через несколько секунд пришлём отчёт</div>
         </div>
       `;
 
@@ -759,9 +759,42 @@ function updateDebugInfo(quizData, antibotResult) {
         const d=await r.json();
         console.log("ANTIBOT DEBUG:", d);
         
-        // Через 3 секунды показываем шаг 6 с отчетом
+                        // Когда готов отчет - показываем его поверх спасибо
         setTimeout(() => {
-          showStep(6);
+          // Показываем отчет вместо спасибо
+          quizBody.innerHTML = `
+            <div class="step active" data-step="6">
+              <div class="q">Результат проверки</div>
+              <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
+                <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">🤖 ДАННЫЕ АНТИБОТ-АНАЛИЗА</div>
+                <div class="debug-grid">
+                  <div class="debug-section">
+                    <div class="debug-title">⏱ Тайминги</div>
+                    <div class="debug-line" id="debugDuration">• Общее время: 0 сек</div>
+                    <div class="debug-line" id="debugAvgInterval">• Средний интервал: 0 мс</div>
+                    <div class="debug-line" id="debugFastClicks">• Быстрые клики: 0</div>
+                  </div>
+                  <div class="debug-section">
+                    <div class="debug-title">🎯 События</div>
+                    <div class="debug-line" id="debugClicks">• Клики: 0</div>
+                    <div class="debug-line" id="debugPaste">• Вставка в телефон: НЕТ</div>
+                    <div class="debug-line" id="debugFakeClick">• Хонипот: НЕТ</div>
+                  </div>
+                  <div class="debug-section">
+                    <div class="debug-title">📊 Оценка</div>
+                    <div class="debug-line" id="debugHeuristic">• Эвристики: 0/100</div>
+                    <div class="debug-line" id="debugAI">• AI-анализ: 0/100</div>
+                    <div class="debug-line" id="debugVerdict">• Вердикт: —</div>
+                  </div>
+                  <div class="debug-section">
+                    <div class="debug-title">🔍 Причины</div>
+                    <div class="debug-line" id="debugReasons">• Анализ...</div>
+                  </div>
+                </div>
+                <div id="debugStatus" class="debug-status">⏳ Проверяем поведение...</div>
+              </div>
+            </div>
+          `;
           updateDebugInfo(payload, d);
         }, 3000);
         
