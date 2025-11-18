@@ -351,18 +351,18 @@
   <!-- ТОЛЬКО ДИАЛОГОВОЕ ОКНО -->
   <div class="chat-container">
     <div class="chat-header">
-      <img src="https://i.imgur.com/VnE8ZUa.png" alt="Анна">
-      <div class="title">Юрист-консультант Анна</div>
-    </div>
+        <img src="https://i.imgur.com/VnE8ZUa.png" alt="Анна">
+        <div class="title">Специалист по антибот-защите</div>
+      </div>
     <div class="chat-messages" id="chat"></div>
     <div id="typingIndicator" style="display:none; padding:10px 20px; font-size:14px; color:#0a3d62;">
       Анна печатает<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </div>
     <div class="chat-suggestions">
-      <button onclick="quickSend('Хочу узнать стоимость банкротства')">Узнать стоимость</button>
-      <button onclick="quickSend('Какие документы нужны?')">Необходимые документы</button>
-      <button onclick="quickSend('Могу ли я списать долги?')">Проверка возможности</button>
-    </div>
+        <button onclick="quickSend('Как работает антибот-защита?')">Принцип работы</button>
+        <button onclick="quickSend('Какие типы ботов определяете?')">Типы ботов</button>
+        <button onclick="quickSend('Сколько стоит подключение?')">Стоимость</button>
+      </div>
     <div class="chat-input">
       <button onclick="startVoice()" title="Говорить">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M192 256c0 17.7-14.3 32-32 32s-32-14.3-32-32V128c0-17.7 14.3-32 32-32s32 14.3 32 32V256zM160 320c35.3 0 64-28.7 64-64V128a64 64 0 1 0-128 0V256c0 35.3 28.7 64 64 64zm56 32H104c-13.3 0-24 10.7-24 24s10.7 24 24 24h24v56c0 13.3 10.7 24 24 24s24-10.7 24-24V400h24c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
@@ -469,7 +469,7 @@
       const res = await fetch(OPENAI_PROXY_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages, userId, mode: "bankruptcy" })
+        body: JSON.stringify({ messages, userId, mode: "antibot" })
       });
       const data = await res.json();
       let reply = data.choices?.[0]?.message?.content || "Ошибка";
@@ -538,7 +538,7 @@
   window.addEventListener("load",()=>{
     setTimeout(()=>{
       if(messages.length===0){
-        appendMessage("Здравствуйте! Я юрист-консультант Анна. Готова ответить на все ваши вопросы по процедуре банкротства физических лиц. Чем могу помочь?", false);
+        appendMessage("Здравствуйте! Я специалист по антибот-защите. Готова рассказать о том, как мы фильтруем ботов в формах и квизах, чтобы вы получали только чистые лиды. Чем могу помочь?", false);
       }
     },1000);
   });
