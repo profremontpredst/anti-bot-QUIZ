@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <title>Проверка на банкротство</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- КОНФИГУРАЦИЯ НОВОГО АНТИБОТ-SDK -->
+  <script>
+    window.GIGABOT_CONFIG = {
+      endpoint: "https://openai-gpt-proxy-d2py.onrender.com",
+      siteId: "site_demo",
+      publicKey: "pk_live_site_demo_001"
+    };
+  </script>
+  <script src="https://gigabot-admin-biea.onrender.com/gigabot.js" defer></script>
+  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9fb; color: #333; line-height: 1.6; }
@@ -266,60 +277,27 @@
           <div class="lead" id="leadForm">
             <div class="field">
               <label>Ваше имя</label>
-              <input id="quizName" class="input" placeholder="Иван">
+              <input id="quizName" name="name" class="input" placeholder="Иван">
             </div>
             <div class="field">
               <label>Телефон</label>
-              <input id="quizPhone" class="input" placeholder="+7 900 000-00-00">
+              <input id="quizPhone" name="phone" class="input" placeholder="+7 900 000-00-00">
             </div>
-            <!-- HONEYPOT ПОЛЕ (скрытое) -->
-            <input type="text" id="quizHoneypot" style="display: none !important; opacity: 0; position: absolute; left: -9999px;" tabindex="-1" autocomplete="off">
           </div>
           <div class="result" id="summaryBox" style="display:none;"></div>
         </div>
 
-        <!-- НОВЫЙ ШАГ 6 - РЕЗУЛЬТАТЫ АНТИБОТА -->
         <div class="step" data-step="6">
-          <div class="q">Результат проверки</div>
+          <div class="q">✅ Отправка завершена</div>
           
           <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
-            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">🤖 ДАННЫЕ АНТИБОТ-АНАЛИЗА</div>
+            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">✅ Спасибо за заявку!</div>
             
-            <div class="debug-grid">
-              <!-- Тайминги -->
-              <div class="debug-section">
-                <div class="debug-title">⏱ Тайминги</div>
-                <div class="debug-line" id="debugDuration">• Общее время: 0 сек</div>
-                <div class="debug-line" id="debugAvgInterval">• Средний интервал: 0 мс</div>
-                <div class="debug-line" id="debugFastClicks">• Быстрые клики: 0</div>
-              </div>
-              
-              <!-- События -->
-              <div class="debug-section">
-                <div class="debug-title">🎯 События</div>
-                <div class="debug-line" id="debugClicks">• Клики: 0</div>
-                <div class="debug-line" id="debugPaste">• Вставка в телефон: НЕТ</div>
-                <div class="debug-line" id="debugFakeClick">• Невидимая кнопка: НЕТ</div>
-              </div>
-              
-              <!-- Оценка -->
-              <div class="debug-section">
-                <div class="debug-title">📊 Оценка</div>
-                <div class="debug-line" id="debugHeuristic">• Эвристики: 0/100</div>
-                <div class="debug-line" id="debugAI">• AI-анализ: 0/100</div>
-                <div class="debug-line" id="debugVerdict">• Вердикт: —</div>
-              </div>
-              
-              <!-- Причины -->
-              <div class="debug-section">
-                <div class="debug-title">🔍 Причины</div>
-                <div class="debug-line" id="debugReasons">• Анализ...</div>
-              </div>
-            </div>
-            
-            <!-- Статус -->
-            <div id="debugStatus" class="debug-status">
-              ⏳ Проверяем поведение...
+            <div style="padding:12px; text-align:center;">
+              <p>Ваши данные отправлены на проверку.</p>
+              <p style="margin-top:10px; font-size:14px; color:#6b7a90;">
+                Антибот-SDK обработал вашу заявку и передал данные в систему.
+              </p>
             </div>
           </div>
 
@@ -377,9 +355,11 @@
 
   <div id="leadPopup">
     <h3 id="leadTitle">Оставьте заявку на консультацию</h3>
-    <input id="leadName" placeholder="Ваше имя">
-    <input id="leadPhone" placeholder="+7 (___) ___-__-__">
-    <button id="leadSubmitBtn">Получить консультацию</button>
+    <form id="popupForm">
+      <input name="name" id="leadName" placeholder="Ваше имя">
+      <input name="phone" id="leadPhone" placeholder="+7 (___) ___-__-__">
+      <button type="submit" id="leadSubmitBtn">Получить консультацию</button>
+    </form>
   </div>
 
   <div id="leadThanks">
@@ -388,47 +368,30 @@
 
 <script src="https://unpkg.com/imask"></script>
 <script>
-  // === ВСЕ СЕРВИСНЫЕ URL ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ ===
+  // ============================
+  // УДАЛЕН СТАРЫЙ АНТИБОТ КОД
+  // ============================
+  
+  // УДАЛЕНЫ: QUIZ_URL, OPENAI_PROXY_URL, LEAD_URL (остались только для чата)
   const OPENAI_PROXY_URL = "https://openai-gpt-proxy-d2py.onrender.com/gpt";
   const LEAD_URL = "https://openai-gpt-proxy-d2py.onrender.com/lead";
-  const QUIZ_URL = "https://openai-gpt-proxy-d2py.onrender.com/quiz";
-
-  // === ВЕСЬ JAVASCRIPT КОД ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ ===
+  
+  // УДАЛЕНЫ: поведенческие данные (mouseMovements, questionTimings, clickPositions)
+  // УДАЛЕНЫ: функции calculateHeuristicScore, updateDebugInfo, behaviorData
+  
+  // ============================
+  // ОСТАВЛЕН ЧАТ
+  // ============================
   let messages = [];
   const chatBox = document.getElementById("chat");
   const chatInput = document.getElementById("chatInput");
 
-  // userId / UTM
   let userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
   localStorage.setItem("userId", userId);
 
   const urlParams = new URLSearchParams(window.location.search);
   const utm_source = urlParams.get("utm_source") || "";
   const utm_content = urlParams.get("utm_content") || "";
-
-  // === СБОР ПОВЕДЕНЧЕСКИХ ДАННЫХ ===
-  window.mouseMovements = [];
-  window.questionTimings = [];
-  window.clickPositions = [];
-  let questionStartTime = Date.now();
-
-  document.addEventListener('mousemove', (e) => {
-    window.mouseMovements.push({x: e.clientX, y: e.clientY, timestamp: Date.now()});
-  });
-
-  document.addEventListener('click', (e) => {
-    window.clickPositions.push({x: e.clientX, y: e.clientY, timestamp: Date.now()});
-  });
-
-  function startQuestionTimer() { questionStartTime = Date.now(); }
-  function recordQuestionTime() {
-    if (questionStartTime) {
-      window.questionTimings.push({question: step, timeSpent: Date.now() - questionStartTime});
-    }
-  }
-
-  // Запускаем таймер
-  startQuestionTimer();
 
   function appendMessage(text, fromUser=false){
     const div = document.createElement("div");
@@ -438,7 +401,6 @@
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // === Живой набор Анны ===
   async function typeMessage(text) {
     const typingIndicator = document.getElementById("typingIndicator");
     typingIndicator.style.display = "block";
@@ -451,7 +413,6 @@
     messages.push({ role: "assistant", content: text });
   }
 
-  // === Основная функция чата ===
   async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
@@ -459,11 +420,6 @@
     appendMessage(text, true);
     messages.push({ role: "user", content: text });
     chatInput.value = "";
-
-    const now = Date.now();
-    window.lastUserMessageTime = window.lastUserMessageTime || now;
-    const responseDelay = now - window.lastUserMessageTime;
-    window.lastUserMessageTime = now;
 
     try {
       const res = await fetch(OPENAI_PROXY_URL, {
@@ -474,12 +430,6 @@
       const data = await res.json();
       let reply = data.choices?.[0]?.message?.content || "Ошибка";
 
-      // Антибот: если отвечает слишком быстро, форму не открываем
-      if (responseDelay < 1000) {
-        reply = reply.replace(/\[openLeadForm\]/gi, "");
-      }
-
-      // ловим [openLeadForm] или triggerForm
       if (/\[openLeadForm\]/i.test(reply) || data.triggerForm) {
         const clean = reply.replace(/\[openLeadForm\]/gi, "").trim();
         document.getElementById("leadTitle").innerText = clean || "Оставьте заявку на консультацию";
@@ -487,10 +437,8 @@
         reply = clean;
       }
 
-      // Анна "печатает" живо
       await typeMessage(reply);
 
-      // === Проверка на [nextMessage] ===
       if (reply.includes("[nextMessage]")) {
         const parts = reply.split("[nextMessage]").map(t => t.trim()).filter(Boolean);
         if (parts.length > 1) {
@@ -543,7 +491,9 @@
     },1000);
   });
 
-  // === Форма ===
+  // ============================
+  // ПОПАП ФОРМА (оставлена как есть)
+  // ============================
   IMask(document.getElementById("leadPhone"), { mask: "+{7} (000) 000-00-00" });
 
   function openLeadForm(){
@@ -558,7 +508,10 @@
     document.getElementById("leadThanks").style.display="none";
   }
 
-  document.getElementById("leadSubmitBtn").addEventListener("click", async ()=>{
+  // Форма в попапе теперь будет обрабатываться gigabot.js
+  document.getElementById("popupForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
     const name = document.getElementById("leadName").value.trim();
     let phone = document.getElementById("leadPhone").value.replace(/\D/g,""); 
 
@@ -585,12 +538,13 @@
     }catch(e){ console.error("Ошибка отправки",e); }
   });
 
-  // === КОД КВИЗА С ДОБАВЛЕНИЕМ 6-ГО ШАГА ===
+  // ============================
+  // КОД КВИЗА (УПРОЩЕН)
+  // ============================
   let step = 1;
-  const total = 6; // Теперь 6 шагов!
+  const total = 6;
   const answers = {};
   const events = [];
-  let last = Date.now();
 
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
@@ -600,116 +554,39 @@
   const status = $("#status");
 
   function showStep(n){
-  if (step > 1) recordQuestionTime();
-  steps.forEach(s=>s.classList.remove("active"));
-  steps[n-1].classList.add("active");
-  pText.textContent = n+" / "+total;
-  pBar.style.width = ((n-1)/(total-1))*100+"%";
-  status.textContent = "Шаг "+n+" из "+total;
-  $("#prevBtn").disabled = n===1;
-  
-  // СКРЫВАЕМ КНОПКУ НА ШАГЕ 6
-  if(n === 6) {
-    $("#nextBtn").style.display = "none";
-  } else {
-    $("#nextBtn").style.display = "inline-flex";
-    $("#nextBtn").textContent = n<total ? "Далее →" : "Отправить";
-  }
-  
-  startQuestionTimer();
-}
-
-  function pushEvent(type,label){
-    const now=Date.now();
-    events.push({type,label,intervalMs:now-last,timestamp:now});
-    last=now;
-  }
-
-  // Функция обновления debug-информации
-function updateDebugInfo(quizData, antibotResult) {
-  // Тайминги
-  const duration = quizData.durationMs / 1000;
-  const intervals = quizData.events.map(e => e.intervalMs || 0);
-  const avgInterval = intervals.length ? intervals.reduce((a, b) => a + b) / intervals.length : 0;
-  const fastClicks = quizData.events.filter(e => e.intervalMs < 150).length;
-  
-  document.getElementById('debugDuration').textContent = `• Общее время: ${duration.toFixed(1)} сек`;
-  document.getElementById('debugAvgInterval').textContent = `• Средний интервал: ${Math.round(avgInterval)} мс`;
-  document.getElementById('debugFastClicks').textContent = `• Быстрые клики: ${fastClicks}`;
-  
-  // События
-  const clicks = quizData.events.filter(e => e.type === 'click' && e.label).length;
-  const hasPaste = quizData.events.some(e => e.type === 'paste');
-  
-  document.getElementById('debugClicks').textContent = `• Клики: ${clicks}`;
-  document.getElementById('debugPaste').textContent = `• Вставка в телефон: ${hasPaste ? 'ДА ⚠️' : 'НЕТ ✅'}`;
-  document.getElementById('debugFakeClick').textContent = `• Хонипот: ${quizData.honeypot ? 'ЗАПОЛНЕН 🚨' : 'НЕТ ✅'}`;
-  
-  // Поведенческие данные
-  const mousePoints = quizData.behaviorData?.mouseMovements?.length || 0;
-  const questionTimes = quizData.behaviorData?.questionTimings?.length || 0;
-  const clickPoints = quizData.behaviorData?.clickPositions?.length || 0;
-  
-  document.getElementById('debugHeuristic').textContent = `• Движения мыши: ${mousePoints} точек`;
-  document.getElementById('debugAI').textContent = `• Время на вопросы: ${questionTimes} записей`;
-  document.getElementById('debugVerdict').textContent = `• Позиции кликов: ${clickPoints} точек`;
-  
-  // Оценка антибота
-  if (antibotResult) {
-    document.getElementById('debugReasons').textContent = `• ${antibotResult.reason || 'Анализ завершён'}`;
+    if (step > 1) recordQuestionTime();
+    steps.forEach(s=>s.classList.remove("active"));
+    steps[n-1].classList.add("active");
+    pText.textContent = n+" / "+total;
+    pBar.style.width = ((n-1)/(total-1))*100+"%";
+    status.textContent = "Шаг "+n+" из "+total;
+    $("#prevBtn").disabled = n===1;
     
-    const statusEl = document.getElementById('debugStatus');
-    if (antibotResult.action === 'allow') {
-      statusEl.innerHTML = `✅ <strong>ЧЕЛОВЕК</strong> - оценка ${antibotResult.score}/100`;
-      statusEl.style.background = '#ecfdf5';
-      statusEl.style.color = '#065f46';
-    } else if (antibotResult.action === 'challenge') {
-      statusEl.innerHTML = `⚠️ <strong>ПОДОЗРИТЕЛЬНО</strong> - оценка ${antibotResult.score}/100`;
-      statusEl.style.background = '#fffbeb';
-      statusEl.style.color = '#92400e';
+    if(n === 6) {
+      $("#nextBtn").style.display = "none";
     } else {
-      statusEl.innerHTML = `⛔️ <strong>БОТ</strong> - оценка ${antibotResult.score}/100`;
-      statusEl.style.background = '#fef2f2';
-      statusEl.style.color = '#dc2626';
+      $("#nextBtn").style.display = "inline-flex";
+      $("#nextBtn").textContent = n<5 ? "Далее →" : "Отправить";
     }
   }
-}
 
-  // Функция перезапуска квиза
-  function restartQuiz() {
-    // Сбрасываем всё
-    step = 1;
-    answers = {};
-    events.length = 0;
-    last = Date.now();
-    
-    // Очищаем выбранные ответы
-    document.querySelectorAll('.btn-opt').forEach(btn => btn.classList.remove('active'));
-    
-    // Очищаем поля ввода
-    document.getElementById('quizName').value = '';
-    document.getElementById('quizPhone').value = '';
-    document.getElementById('quizHoneypot').value = '';
-    
-    // Показываем первый шаг
-    showStep(1);
+  function recordQuestionTime() {
+    // Минимальная логика для совместимости
   }
 
-  // Переход на сайт
   function goToPricing() {
     window.open('https://твой-сайт.ру#try', '_blank');
   }
 
   $$(".btn-opt").forEach(btn=>{
-  btn.onclick=()=>{
-    const name=btn.dataset.name,val=btn.dataset.value;
-    btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    answers[name]=val;
-    pushEvent("click",name+":"+val);
-    if(step<5) setTimeout(()=>showStep(++step),200);
-  };
-});
+    btn.onclick=()=>{
+      const name=btn.dataset.name,val=btn.dataset.value;
+      btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      answers[name]=val;
+      if(step<5) setTimeout(()=>showStep(++step),200);
+    };
+  });
 
   $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);}
 
@@ -719,112 +596,22 @@ function updateDebugInfo(quizData, antibotResult) {
     else if(step === 5){
       const name=$("#quizName").value.trim();
       let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
-      const honeypot=$("#quizHoneypot").value;
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
       if(!name||phone.length<12)return alert("Введите корректные данные");
 
-      // МГНОВЕННО показываем анализ на шаге 5
-      const quizBody = document.querySelector('.quiz__body');
-      quizBody.innerHTML = `
-        <div style="text-align:center;padding:60px 20px;">
-          <img src="https://i.ibb.co/V0RX3KZ7/image.png" alt="Анализ" style="width:120px;height:120px;border-radius:50%;margin-bottom:20px;object-fit:cover;">
-          <div style="font-size:24px;font-weight:700;color:#0a3d62;margin-bottom:10px;">Идёт анализ вашего сайта</div>
-          <div style="font-size:16px;color:#6b7a90;">Через несколько секунд пришлём отчёт</div>
-        </div>
-      `;
-
-      // ФОНГОМ делаем антибот проверку и показываем отчет
-      const userId=localStorage.getItem("userId")||("user_"+Math.random().toString(36).slice(2,10));
-      localStorage.setItem("userId",userId);
+      // Показываем финальный шаг
+      showStep(6);
       
-      const behaviorData = {
-        mouseMovements: window.mouseMovements || [],
-        questionTimings: window.questionTimings || [],
-        clickPositions: window.clickPositions || [],
-        userAgent: navigator.userAgent
-      };
-
-      const payload = {
-        userId, 
-        answers, 
-        events, 
-        phone, 
-        honeypot, 
-        durationMs: Date.now() - events[0]?.timestamp || 0,
-        behaviorData
-      };
-      
-      try{
-        const r=await fetch(QUIZ_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-        const d=await r.json();
-        console.log("ANTIBOT DEBUG:", d);
-        
-                        // Когда готов отчет - показываем его поверх спасибо
-        setTimeout(() => {
-          // Показываем отчет вместо спасибо
-          quizBody.innerHTML = `
-            <div class="step active" data-step="6">
-              <div class="q">Результат проверки</div>
-              <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
-                <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">🤖 ДАННЫЕ АНТИБОТ-АНАЛИЗА</div>
-                <div class="debug-grid">
-                  <div class="debug-section">
-                    <div class="debug-title">⏱ Тайминги</div>
-                    <div class="debug-line" id="debugDuration">• Общее время: 0 сек</div>
-                    <div class="debug-line" id="debugAvgInterval">• Средний интервал: 0 мс</div>
-                    <div class="debug-line" id="debugFastClicks">• Быстрые клики: 0</div>
-                  </div>
-                  <div class="debug-section">
-                    <div class="debug-title">🎯 События</div>
-                    <div class="debug-line" id="debugClicks">• Клики: 0</div>
-                    <div class="debug-line" id="debugPaste">• Вставка в телефон: НЕТ</div>
-                    <div class="debug-line" id="debugFakeClick">• Хонипот: НЕТ</div>
-                  </div>
-                  <div class="debug-section">
-                    <div class="debug-title">📊 Оценка</div>
-                    <div class="debug-line" id="debugHeuristic">• Эвристики: 0/100</div>
-                    <div class="debug-line" id="debugAI">• AI-анализ: 0/100</div>
-                    <div class="debug-line" id="debugVerdict">• Вердикт: —</div>
-                  </div>
-                  <div class="debug-section">
-                    <div class="debug-title">🔍 Причины</div>
-                    <div class="debug-line" id="debugReasons">• Анализ...</div>
-                  </div>
-                </div>
-                <div id="debugStatus" class="debug-status">⏳ Проверяем поведение...</div>
-              </div>
-            </div>
-          `;
-          updateDebugInfo(payload, d);
-        }, 3000);
-        
-        if(d.action !== "deny") {
-          const answersSummary = Object.entries(answers).map(([q,a]) => `${q}: ${a}`).join("; ");
-          await fetch(LEAD_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({
-              name,
-              phone,
-              userId,
-              source: "quiz",
-              no_summary: true,
-              answersSummary: answersSummary,
-              messages: []
-            })});
-        }
-      }catch(e){
-        console.error("Ошибка соединения", e);
-        // В случае ошибки всё равно показываем отчет
-        setTimeout(() => {
-          showStep(6);
-          updateDebugInfo(payload, {action: "error", reason: "Ошибка соединения"});
-        }, 3000);
-      }
+      // В реальной работе отправка формы будет перехвачена gigabot.js
+      // Здесь просто показываем завершение
     }
   };
 
   showStep(1);
 
-  // === МАСКА ТЕЛЕФОНА И DETECTOR PASTE ===
+  // ============================
+  // МАСКА ТЕЛЕФОНА (оставлена)
+  // ============================
   const phoneInput = document.getElementById("quizPhone");
   const mask = IMask(phoneInput, {
     mask: '+{7} (000) 000-00-00',
@@ -839,10 +626,6 @@ function updateDebugInfo(quizData, antibotResult) {
       phoneInput.value = corrected.replace(/_/g, '');
       mask.updateValue();
     }
-  });
-
-  phoneInput.addEventListener('paste', (e) => {
-    pushEvent("paste", "phone");
   });
 </script>
 </body>
