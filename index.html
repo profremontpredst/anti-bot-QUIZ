@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>РџСЂРѕРІРµСЂРєР° РЅР° Р±Р°РЅРєСЂРѕС‚СЃС‚РІРѕ</title>
+  <title>Проверка на банкротство</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- РљРћРќР¤РР“РЈР РђР¦РРЇ РќРћР’РћР“Рћ РђРќРўРР‘РћРў-SDK -->
+  <!-- КОНФИГУРАЦИЯ НОВОГО АНТИБОТ-SDK -->
   <script>
         window.GIGABOT_CONFIG = {
           endpoint: "https://gigabot-db4r.onrender.com",
@@ -20,7 +20,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9fb; color: #333; line-height: 1.6; }
 
-    /* === РљР’РР— FLEXBE РЎРўРР›Р¬ === */
+    /* === КВИЗ FLEXBE СТИЛЬ === */
 .quiz-wrapper * { all: unset; display: revert; box-sizing: border-box; }
 
 .quiz-wrapper{
@@ -232,12 +232,12 @@
   </style>
 </head>
 <body>
-  <!-- РўРћР›Р¬РљРћ РљР’РР— -->
+  <!-- ТОЛЬКО КВИЗ -->
   <div class="quiz-wrapper">
     <div class="quiz" id="quiz">
       <div class="quiz__header">
         <div class="quiz__logo">AU</div>
-        <div class="quiz__title">РџСЂРѕРІРµСЂРєР° РЅР° Р±Р°РЅРєСЂРѕС‚СЃС‚РІРѕ</div>
+        <div class="quiz__title">Проверка на банкротство</div>
         <div class="quiz__progress">
           <span id="pText">1 / 6</span>
           <div class="bar"><span id="pBar"></span></div>
@@ -245,49 +245,49 @@
       </div>
       <div class="quiz__body">
         <div class="step active" data-step="1">
-          <div class="q">1. РљР°РєР°СЏ Сѓ РІР°СЃ СЃСѓРјРјР° РґРѕР»РіР°?</div>
+          <div class="q">1. Какая у вас сумма долга?</div>
           <div class="options">
-            <button class="btn-opt" data-name="debt" data-value="РґРѕ 300 С‚С‹СЃ.">Р”Рѕ 300 С‚С‹СЃ.</button>
-            <button class="btn-opt" data-name="debt" data-value="300вЂ“500 С‚С‹СЃ.">300вЂ“500 С‚С‹СЃ.</button>
-            <button class="btn-opt" data-name="debt" data-value="Р±РѕР»РµРµ 500 С‚С‹СЃ.">Р‘РѕР»РµРµ 500 С‚С‹СЃ.</button>
+            <button class="btn-opt" data-name="debt" data-value="до 300 тыс.">До 300 тыс.</button>
+            <button class="btn-opt" data-name="debt" data-value="300–500 тыс.">300–500 тыс.</button>
+            <button class="btn-opt" data-name="debt" data-value="более 500 тыс.">Более 500 тыс.</button>
           </div>
         </div>
 
         <div class="step" data-step="2">
-          <div class="q">2. Р•СЃС‚СЊ Р»Рё РїСЂРѕСЃСЂРѕС‡РєРё?</div>
+          <div class="q">2. Есть ли просрочки?</div>
           <div class="options">
-            <button class="btn-opt" data-name="delay" data-value="РЅРµС‚">РќРµС‚</button>
-            <button class="btn-opt" data-name="delay" data-value="РјРµРЅРµРµ 3 РјРµСЃ.">РњРµРЅРµРµ 3 РјРµСЃ.</button>
-            <button class="btn-opt" data-name="delay" data-value="Р±РѕР»РµРµ 3 РјРµСЃ.">Р‘РѕР»РµРµ 3 РјРµСЃ.</button>
+            <button class="btn-opt" data-name="delay" data-value="нет">Нет</button>
+            <button class="btn-opt" data-name="delay" data-value="менее 3 мес.">Менее 3 мес.</button>
+            <button class="btn-opt" data-name="delay" data-value="более 3 мес.">Более 3 мес.</button>
           </div>
         </div>
 
         <div class="step" data-step="3">
-          <div class="q">3. Р Р°Р±РѕС‚Р°РµС‚Рµ РѕС„РёС†РёР°Р»СЊРЅРѕ?</div>
+          <div class="q">3. Работаете официально?</div>
           <div class="options">
-            <button class="btn-opt" data-name="job" data-value="РґР°">Р”Р°</button>
-            <button class="btn-opt" data-name="job" data-value="РЅРµС‚">РќРµС‚</button>
+            <button class="btn-opt" data-name="job" data-value="да">Да</button>
+            <button class="btn-opt" data-name="job" data-value="нет">Нет</button>
           </div>
         </div>
 
         <div class="step" data-step="4">
-          <div class="q">4. Р•СЃС‚СЊ Р»Рё РёРјСѓС‰РµСЃС‚РІРѕ РєСЂРѕРјРµ Р¶РёР»СЊСЏ?</div>
+          <div class="q">4. Есть ли имущество кроме жилья?</div>
           <div class="options">
-            <button class="btn-opt" data-name="property" data-value="РЅРµС‚">РќРµС‚</button>
-            <button class="btn-opt" data-name="property" data-value="РµСЃС‚СЊ, С…РѕС‡Сѓ СЃРѕС…СЂР°РЅРёС‚СЊ">Р•СЃС‚СЊ, С…РѕС‡Сѓ СЃРѕС…СЂР°РЅРёС‚СЊ</button>
-            <button class="btn-opt" data-name="property" data-value="РіРѕС‚РѕРІ РїСЂРѕРґР°С‚СЊ">Р“РѕС‚РѕРІ РїСЂРѕРґР°С‚СЊ</button>
+            <button class="btn-opt" data-name="property" data-value="нет">Нет</button>
+            <button class="btn-opt" data-name="property" data-value="есть, хочу сохранить">Есть, хочу сохранить</button>
+            <button class="btn-opt" data-name="property" data-value="готов продать">Готов продать</button>
           </div>
         </div>
 
         <div class="step" data-step="5">
-          <div class="q">5. РћСЃС‚Р°РІСЊС‚Рµ РєРѕРЅС‚Р°РєС‚ РґР»СЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°</div>
+          <div class="q">5. Оставьте контакт для результата</div>
           <div class="lead" id="leadForm">
             <div class="field">
-              <label>Р’Р°С€Рµ РёРјСЏ</label>
-              <input id="quizName" name="name" class="input" placeholder="РРІР°РЅ">
+              <label>Ваше имя</label>
+              <input id="quizName" name="name" class="input" placeholder="Иван">
             </div>
             <div class="field">
-              <label>РўРµР»РµС„РѕРЅ</label>
+              <label>Телефон</label>
               <input id="quizPhone" name="phone" class="input" placeholder="+7 900 000-00-00">
             </div>
           </div>
@@ -295,65 +295,65 @@
         </div>
 
         <div class="step" data-step="6">
-          <div class="q">вњ… РћС‚РїСЂР°РІРєР° Р·Р°РІРµСЂС€РµРЅР°</div>
+          <div class="q">✅ Отправка завершена</div>
           
           <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
-            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">вњ… РЎРїР°СЃРёР±Рѕ Р·Р° Р·Р°СЏРІРєСѓ!</div>
+            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">✅ Спасибо за заявку!</div>
             
             <div style="padding:12px; text-align:center;">
-              <p>Р’Р°С€Рё РґР°РЅРЅС‹Рµ РѕС‚РїСЂР°РІР»РµРЅС‹ РЅР° РїСЂРѕРІРµСЂРєСѓ.</p>
+              <p>Ваши данные отправлены на проверку.</p>
               <p style="margin-top:10px; font-size:14px; color:#6b7a90;">
-                РђРЅС‚РёР±РѕС‚-SDK РѕР±СЂР°Р±РѕС‚Р°Р» РІР°С€Сѓ Р·Р°СЏРІРєСѓ Рё РїРµСЂРµРґР°Р» РґР°РЅРЅС‹Рµ РІ СЃРёСЃС‚РµРјСѓ.
+                Антибот-SDK обработал вашу заявку и передал данные в систему.
               </p>
             </div>
           </div>
 
-          <!-- РљРЅРѕРїРєРё РґРµР№СЃС‚РІРёР№ -->
+          <!-- Кнопки действий -->
           <div class="controls" style="margin-top:20px; justify-content:center; gap:16px;">
             <button class="btn btn--primary" onclick="goToPricing()">
-              рџљЂ РџРѕРїСЂРѕР±РѕРІР°С‚СЊ Р±РµСЃРїР»Р°С‚РЅРѕ
+              🚀 Попробовать бесплатно
             </button>
           </div>
           
           <div class="muted" style="text-align:center; margin-top:12px;">
-            Р­С‚Рѕ РґРµРјРѕ-РІРµСЂСЃРёСЏ. РџРѕР»СѓС‡РёС‚Рµ РїРѕР»РЅС‹Р№ РґРѕСЃС‚СѓРї Рє Р°РЅС‚РёР±РѕС‚Сѓ РґР»СЏ РІР°С€РµРіРѕ СЃР°Р№С‚Р°
+            Это демо-версия. Получите полный доступ к антиботу для вашего сайта
           </div>
         </div>
 
         <div class="controls">
-          <button class="btn btn--ghost" id="prevBtn" disabled>в†ђ РќР°Р·Р°Рґ</button>
-          <button class="btn btn--primary" id="nextBtn">Р”Р°Р»РµРµ в†’</button>
+          <button class="btn btn--ghost" id="prevBtn" disabled>← Назад</button>
+          <button class="btn btn--primary" id="nextBtn">Далее →</button>
         </div>
-        <div class="muted">РћС‚РІРµС‚СЊС‚Рµ РЅР° 5 РІРѕРїСЂРѕСЃРѕРІ, С‡С‚РѕР±С‹ РїСЂРѕРІРµСЂРёС‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ Р±Р°РЅРєСЂРѕС‚СЃС‚РІР°</div>
+        <div class="muted">Ответьте на 5 вопросов, чтобы проверить возможность банкротства</div>
       </div>
       <div class="footer">
-        <div class="hint">РђРЅС‚РёР±РѕС‚ РІРєР»СЋС‡С‘РЅ вЂў РџРѕРІРµРґРµРЅРёРµ Р°РЅР°Р»РёР·РёСЂСѓРµС‚СЃСЏ</div>
-        <div class="hint" id="status">РЁР°Рі 1 РёР· 6</div>
+        <div class="hint">Антибот включён • Поведение анализируется</div>
+        <div class="hint" id="status">Шаг 1 из 6</div>
       </div>
     </div>
   </div>
 
-  <!-- РўРћР›Р¬РљРћ Р”РРђР›РћР“РћР’РћР• РћРљРќРћ -->
+  <!-- ТОЛЬКО ДИАЛОГОВОЕ ОКНО -->
   <div class="chat-container">
     <div class="chat-header">
-        <img src="https://i.imgur.com/VnE8ZUa.png" alt="РђРЅРЅР°">
-        <div class="title">РЎРїРµС†РёР°Р»РёСЃС‚ РїРѕ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Рµ</div>
+        <img src="https://i.imgur.com/VnE8ZUa.png" alt="Анна">
+        <div class="title">Специалист по антибот-защите</div>
       </div>
     <div class="chat-messages" id="chat"></div>
     <div id="typingIndicator" style="display:none; padding:10px 20px; font-size:14px; color:#0a3d62;">
-      РђРЅРЅР° РїРµС‡Р°С‚Р°РµС‚<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      Анна печатает<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </div>
     <div class="chat-suggestions">
-        <button onclick="quickSend('РљР°Рє СЂР°Р±РѕС‚Р°РµС‚ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Р°?')">РџСЂРёРЅС†РёРї СЂР°Р±РѕС‚С‹</button>
-        <button onclick="quickSend('РљР°РєРёРµ С‚РёРїС‹ Р±РѕС‚РѕРІ РѕРїСЂРµРґРµР»СЏРµС‚Рµ?')">РўРёРїС‹ Р±РѕС‚РѕРІ</button>
-        <button onclick="quickSend('РЎРєРѕР»СЊРєРѕ СЃС‚РѕРёС‚ РїРѕРґРєР»СЋС‡РµРЅРёРµ?')">РЎС‚РѕРёРјРѕСЃС‚СЊ</button>
+        <button onclick="quickSend('Как работает антибот-защита?')">Принцип работы</button>
+        <button onclick="quickSend('Какие типы ботов определяете?')">Типы ботов</button>
+        <button onclick="quickSend('Сколько стоит подключение?')">Стоимость</button>
       </div>
     <div class="chat-input">
-      <button onclick="startVoice()" title="Р“РѕРІРѕСЂРёС‚СЊ">
+      <button onclick="startVoice()" title="Говорить">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M192 256c0 17.7-14.3 32-32 32s-32-14.3-32-32V128c0-17.7 14.3-32 32-32s32 14.3 32 32V256zM160 320c35.3 0 64-28.7 64-64V128a64 64 0 1 0-128 0V256c0 35.3 28.7 64 64 64zm56 32H104c-13.3 0-24 10.7-24 24s10.7 24 24 24h24v56c0 13.3 10.7 24 24 24s24-10.7 24-24V400h24c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
       </button>
-      <input type="text" id="chatInput" placeholder="Р’РІРµРґРёС‚Рµ РІР°С€ РІРѕРїСЂРѕСЃ...">
-      <button onclick="sendMessage()">РћС‚РїСЂР°РІРёС‚СЊ</button>
+      <input type="text" id="chatInput" placeholder="Введите ваш вопрос...">
+      <button onclick="sendMessage()">Отправить</button>
     </div>
   </div>
 
@@ -361,33 +361,33 @@
   <div id="leadOverlay"></div>
 
   <div id="leadPopup">
-    <h3 id="leadTitle">РћСЃС‚Р°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ</h3>
+    <h3 id="leadTitle">Оставьте заявку на консультацию</h3>
     <form id="popupForm">
-      <input name="name" id="leadName" placeholder="Р’Р°С€Рµ РёРјСЏ">
+      <input name="name" id="leadName" placeholder="Ваше имя">
       <input name="phone" id="leadPhone" placeholder="+7 (___) ___-__-__">
-      <button type="submit" id="leadSubmitBtn">РџРѕР»СѓС‡РёС‚СЊ РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ</button>
+      <button type="submit" id="leadSubmitBtn">Получить консультацию</button>
     </form>
   </div>
 
   <div id="leadThanks">
-    <div style="font-size: 18px; padding: 20px;">вњ… РЎРїР°СЃРёР±Рѕ Р·Р° Р·Р°СЏРІРєСѓ!<br>РњС‹ СЃРІСЏР¶РµРјСЃСЏ СЃ РІР°РјРё РІ С‚РµС‡РµРЅРёРµ 15 РјРёРЅСѓС‚</div>
+    <div style="font-size: 18px; padding: 20px;">✅ Спасибо за заявку!<br>Мы свяжемся с вами в течение 15 минут</div>
   </div>
 
 <script src="https://unpkg.com/imask"></script>
 <script>
   // ============================
-  // РЈР”РђР›Р•Рќ РЎРўРђР Р«Р™ РђРќРўРР‘РћРў РљРћР”
+  // УДАЛЕН СТАРЫЙ АНТИБОТ КОД
   // ============================
   
-  // РЈР”РђР›Р•РќР«: QUIZ_URL, OPENAI_PROXY_URL, LEAD_URL (РѕСЃС‚Р°Р»РёСЃСЊ С‚РѕР»СЊРєРѕ РґР»СЏ С‡Р°С‚Р°)
+  // УДАЛЕНЫ: QUIZ_URL, OPENAI_PROXY_URL, LEAD_URL (остались только для чата)
   const OPENAI_PROXY_URL = "https://openai-gpt-proxy-d2py.onrender.com/gpt";
   const LEAD_URL = "https://openai-gpt-proxy-d2py.onrender.com/lead";
   
-  // РЈР”РђР›Р•РќР«: РїРѕРІРµРґРµРЅС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ (mouseMovements, questionTimings, clickPositions)
-  // РЈР”РђР›Р•РќР«: С„СѓРЅРєС†РёРё calculateHeuristicScore, updateDebugInfo, behaviorData
+  // УДАЛЕНЫ: поведенческие данные (mouseMovements, questionTimings, clickPositions)
+  // УДАЛЕНЫ: функции calculateHeuristicScore, updateDebugInfo, behaviorData
   
   // ============================
-  // РћРЎРўРђР’Р›Р•Рќ Р§РђРў
+  // ОСТАВЛЕН ЧАТ
   // ============================
   let messages = [];
   const chatBox = document.getElementById("chat");
@@ -435,11 +435,11 @@
         body: JSON.stringify({ messages, userId, mode: "antibot" })
       });
       const data = await res.json();
-      let reply = data.choices?.[0]?.message?.content || "РћС€РёР±РєР°";
+      let reply = data.choices?.[0]?.message?.content || "Ошибка";
 
       if (/\[openLeadForm\]/i.test(reply) || data.triggerForm) {
         const clean = reply.replace(/\[openLeadForm\]/gi, "").trim();
-        document.getElementById("leadTitle").innerText = clean || "РћСЃС‚Р°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ";
+        document.getElementById("leadTitle").innerText = clean || "Оставьте заявку на консультацию";
         openLeadForm();
         reply = clean;
       }
@@ -462,7 +462,7 @@
       }
 
     } catch (e) {
-      appendMessage("РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ", false);
+      appendMessage("Ошибка соединения", false);
     }
   }
 
@@ -480,7 +480,7 @@
       chatInput.value=text;
       sendMessage();
     };
-    recognition.onerror=()=>alert("РћС€РёР±РєР° СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ");
+    recognition.onerror=()=>alert("Ошибка распознавания");
   }
 
   chatInput.addEventListener("keydown", e=>{
@@ -493,13 +493,13 @@
   window.addEventListener("load",()=>{
     setTimeout(()=>{
       if(messages.length===0){
-        appendMessage("Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ! РЇ СЃРїРµС†РёР°Р»РёСЃС‚ РїРѕ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Рµ. Р“РѕС‚РѕРІР° СЂР°СЃСЃРєР°Р·Р°С‚СЊ Рѕ С‚РѕРј, РєР°Рє РјС‹ С„РёР»СЊС‚СЂСѓРµРј Р±РѕС‚РѕРІ РІ С„РѕСЂРјР°С… Рё РєРІРёР·Р°С…, С‡С‚РѕР±С‹ РІС‹ РїРѕР»СѓС‡Р°Р»Рё С‚РѕР»СЊРєРѕ С‡РёСЃС‚С‹Рµ Р»РёРґС‹. Р§РµРј РјРѕРіСѓ РїРѕРјРѕС‡СЊ?", false);
+        appendMessage("Здравствуйте! Я специалист по антибот-защите. Готова рассказать о том, как мы фильтруем ботов в формах и квизах, чтобы вы получали только чистые лиды. Чем могу помочь?", false);
       }
     },1000);
   });
 
   // ============================
-  // РџРћРџРђРџ Р¤РћР РњРђ (РѕСЃС‚Р°РІР»РµРЅР° РєР°Рє РµСЃС‚СЊ)
+  // ПОПАП ФОРМА (оставлена как есть)
   // ============================
   IMask(document.getElementById("leadPhone"), { mask: "+{7} (000) 000-00-00" });
 
@@ -515,7 +515,7 @@
     document.getElementById("leadThanks").style.display="none";
   }
 
-  // Р¤РѕСЂРјР° РІ РїРѕРїР°РїРµ С‚РµРїРµСЂСЊ Р±СѓРґРµС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊСЃСЏ gigabot.js
+  // Форма в попапе теперь будет обрабатываться gigabot.js
   document.getElementById("popupForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     
@@ -523,7 +523,7 @@
     let phone = document.getElementById("leadPhone").value.replace(/\D/g,""); 
 
     if(!name || phone.length < 10){ 
-      alert("Р’РІРµРґРёС‚Рµ РёРјСЏ Рё РєРѕСЂСЂРµРєС‚РЅС‹Р№ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°"); 
+      alert("Введите имя и корректный номер телефона"); 
       return; 
     }
 
@@ -542,11 +542,11 @@
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(payload)
       });
-    }catch(e){ console.error("РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё",e); }
+    }catch(e){ console.error("Ошибка отправки",e); }
   });
 
   // ============================
-  // РљРћР” РљР’РР—Рђ (РЈРџР РћР©Р•Рќ)
+  // КОД КВИЗА (УПРОЩЕН)
   // ============================
   let step = 1;
   const total = 6;
@@ -566,23 +566,23 @@
     steps[n-1].classList.add("active");
     pText.textContent = n+" / "+total;
     pBar.style.width = ((n-1)/(total-1))*100+"%";
-    status.textContent = "РЁР°Рі "+n+" РёР· "+total;
+    status.textContent = "Шаг "+n+" из "+total;
     $("#prevBtn").disabled = n===1;
     
     if(n === 6) {
       $("#nextBtn").style.display = "none";
     } else {
       $("#nextBtn").style.display = "inline-flex";
-      $("#nextBtn").textContent = n<5 ? "Р”Р°Р»РµРµ в†’" : "РћС‚РїСЂР°РІРёС‚СЊ";
+      $("#nextBtn").textContent = n<5 ? "Далее →" : "Отправить";
     }
   }
 
   function recordQuestionTime() {
-    // РњРёРЅРёРјР°Р»СЊРЅР°СЏ Р»РѕРіРёРєР° РґР»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё
+    // Минимальная логика для совместимости
   }
 
   function goToPricing() {
-    window.open('https://С‚РІРѕР№-СЃР°Р№С‚.СЂСѓ#try', '_blank');
+    window.open('https://твой-сайт.ру#try', '_blank');
   }
 
   function renderFinalResult(data) {
@@ -605,9 +605,9 @@
     const score = (typeof data?.score === "number") ? data.score : "-";
     const reason = data?.reason || "-";
     panel.innerHTML = `
-      <div><b>РЎС‚Р°С‚СѓСЃ:</b> ${action}</div>
+      <div><b>Статус:</b> ${action}</div>
       <div><b>Score:</b> ${score}</div>
-      <div><b>РџСЂРёС‡РёРЅР°:</b> ${reason}</div>
+      <div><b>Причина:</b> ${reason}</div>
     `;
   }
 
@@ -630,7 +630,7 @@
       const name=$("#quizName").value.trim();
       let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
-      if(!name||phone.length<12)return alert("Введите корректные данные");
+      if(!name||phone.length<12)return alert("������� ���������� ������");
 
       const fields = { name, phone, ...answers };
       try {
@@ -656,7 +656,7 @@
   showStep(1);
 
   // ============================
-  // РњРђРЎРљРђ РўР•Р›Р•Р¤РћРќРђ (РѕСЃС‚Р°РІР»РµРЅР°)
+  // МАСКА ТЕЛЕФОНА (оставлена)
   // ============================
   const phoneInput = document.getElementById("quizPhone");
   const mask = IMask(phoneInput, {
