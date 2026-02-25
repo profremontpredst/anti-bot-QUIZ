@@ -811,7 +811,14 @@ function calculateVariance(arr) {
       if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
       if(!name||phone.length<12)return alert("������� ���������� ������");
 
-      const fields = { name, phone, ...answers };
+            const fields = { name, phone, ...answers };
+      
+      // СОРТИРУЕМ СОБЫТИЯ И СЧИТАЕМ ИНТЕРВАЛЫ
+      events.sort((a, b) => a.timestamp - b.timestamp);
+      for (let i = 1; i < events.length; i++) {
+        events[i].intervalMs = events[i].timestamp - events[i-1].timestamp;
+      }
+      
       try {
         if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
           throw new Error("gigabot_not_loaded");
