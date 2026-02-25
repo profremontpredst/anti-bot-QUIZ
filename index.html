@@ -396,6 +396,8 @@
   let userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
   localStorage.setItem("userId", userId);
 
+  let startTime = Date.now();
+
   const urlParams = new URLSearchParams(window.location.search);
   const utm_source = urlParams.get("utm_source") || "";
   const utm_content = urlParams.get("utm_content") || "";
@@ -586,30 +588,180 @@
   }
 
   function renderFinalResult(data) {
-    const step6Result = document.querySelector('.step[data-step="6"] .result');
-    if (!step6Result) return;
-    let panel = document.getElementById("finalDetails");
-    if (!panel) {
-      panel = document.createElement("div");
-      panel.id = "finalDetails";
-      panel.style.marginTop = "12px";
-      panel.style.padding = "12px";
-      panel.style.background = "#fff";
-      panel.style.border = "1px solid #e7eef7";
-      panel.style.borderRadius = "10px";
-      panel.style.fontSize = "14px";
-      panel.style.textAlign = "left";
-      step6Result.appendChild(panel);
-    }
-    const action = data?.action || "unknown";
-    const score = (typeof data?.score === "number") ? data.score : "-";
-    const reason = data?.reason || "-";
-    panel.innerHTML = `
-      <div><b>Статус:</b> ${action}</div>
-      <div><b>Score:</b> ${score}</div>
-      <div><b>Причина:</b> ${reason}</div>
-    `;
-  }
+  const step6Result = document.querySelector('.step[data-step="6"] .result');
+  if (!step6Result) return;
+  
+  // Удаляем старую панель если есть
+  const oldPanel = document.getElementById("finalDetails");
+  if (oldPanel) oldPanel.remove();
+  
+  // Создаем новую пиздатую панель
+  const panel = document.createElement("div");
+  panel.id = "finalDetails";
+  panel.style.marginTop = "20px";
+  panel.style.padding = "0";
+  panel.style.background = "#fff";
+  panel.style.border = "1px solid #e7eef7";
+  panel.style.borderRadius = "16px";
+  panel.style.fontSize = "14px";
+  panel.style.textAlign = "left";
+  panel.style.overflow = "hidden";
+  
+  // Заголовок результата
+  const actionColor = data.action === 'allow' ? '#10b981' : (data.action === 'deny' || data.action === 'block' ? '#ef4444' : '#f59e0b');
+  const actionText = data.action === 'allow' ? '✓ ЧЕЛОВЕК' : (data.action === 'deny' || data.action === 'block' ? '✗ БОТ' : '⚠ СОМНИТЕЛЬНО');
+  
+  // Извлекаем данные из events если есть
+  const events = data._events || [];
+  const intervals = events.map(e => e.intervalMs).filter(i => i > 0);
+  const avgInterval = intervals.length ? Math.round(intervals.reduce((a,b) => a+b, 0) / intervals.length) : 0;
+  const minInterval = intervals.length ? Math.min(...intervals) : 0;
+  const maxInterval = intervals.length ? Math.max(...intervals) : 0;
+  const intervalVariance = intervals.length > 1 ? Math.round(calculateVariance(intervals)) : 0;
+  
+  // Подсчет типов событий
+  const pasteCount = events.filter(e => e.type === 'paste').length;
+  const clickCount = events.filter(e => e.type === 'click' || e.type === 'mousedown').length;
+  const inputCount = events.filter(e => e.type === 'input').length;
+  
+  // Форматирование времени
+  const durationSec = data.durationMs ? Math.round(data.durationMs / 1000) : 0;
+  
+  // Собираем HTML
+  panel.innerHTML = `
+    <div style="background:${actionColor}; color:white; padding:16px; font-weight:700; font-size:18px; display:flex; justify-content:space-between; align-items:center;">
+      <span>${actionText}</span>
+      <span style="background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:999px; font-size:14px;">Score: ${data.score || 0}</span>
+    </div>
+    
+    <div style="padding:16px; border-bottom:1px solid #eef2f6;">
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">📊 ОСНОВНЫЕ ПАРАМЕТРЫ</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div style="background:#f8fafc; padding:10px; border-radius:8px;">
+          <div style="color:#6b7a90; font-size:12px;">Статус проверки</div>
+          <div style="font-weight:600; color:${actionColor};">${data.action || 'unknown'}</div>
+        </div>
+        <div style="background:#f8fafc; padding:10px; border-radius:8px;">
+          <div style="color:#6b7a90; font-size:12px;">Причина</div>
+          <div style="font-weight:500;">${data.reason || '—'}</div>
+        </div>
+        <div style="background:#f8fafc; padding:10px; border-radius:8px;">
+          <div style="color:#6b7a90; font-size:12px;">Источник анализа</div>
+          <div style="font-weight:500;">${data.analysisSource || 'heuristic'}</div>
+        </div>
+        <div style="background:#f8fafc; padding:10px; border-radius:8px;">
+          <div style="color:#6b7a90; font-size:12px;">User ID</div>
+          <div style="font-weight:500; font-family:monospace; font-size:12px;">${data.userId || '—'}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="padding:16px; border-bottom:1px solid #eef2f6;">
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">👤 ТЕХНИЧЕСКИЕ ДАННЫЕ</div>
+      <div style="display:grid; grid-template-columns:1fr 2fr; gap:4px 8px; background:#f8fafc; padding:10px; border-radius:8px;">
+        <div style="color:#6b7a90;">IP-адрес:</div><div style="font-family:monospace;">${data.ip || '—'}</div>
+        <div style="color:#6b7a90;">User-Agent:</div><div style="font-size:11px; overflow:hidden; text-overflow:ellipsis;">${data.ua ? data.ua.substring(0,60)+'...' : '—'}</div>
+        <div style="color:#6b7a90;">UTM source:</div><div>${data.utm?.utm_source || data.utm_source || '—'}</div>
+        <div style="color:#6b7a90;">UTM campaign:</div><div>${data.utm?.utm_campaign || data.utm_campaign || '—'}</div>
+      </div>
+    </div>
+    
+    <div style="padding:16px; border-bottom:1px solid #eef2f6;">
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">⏱️ СКОРОСТЬ ЗАПОЛНЕНИЯ (${durationSec} сек)</div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px;">
+        <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
+          <div style="color:#6b7a90; font-size:11px;">Средний интервал</div>
+          <div style="font-weight:700; font-size:16px;">${avgInterval}ms</div>
+        </div>
+        <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
+          <div style="color:#6b7a90; font-size:11px;">Мин/Макс</div>
+          <div style="font-weight:700; font-size:14px;">${minInterval}/${maxInterval}ms</div>
+        </div>
+        <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
+          <div style="color:#6b7a90; font-size:11px;">Вариативность</div>
+          <div style="font-weight:700; font-size:14px; color:${intervalVariance < 100 ? '#ef4444' : '#10b981'};">${intervalVariance}</div>
+        </div>
+        <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
+          <div style="color:#6b7a90; font-size:11px;">Всего событий</div>
+          <div style="font-weight:700; font-size:16px;">${events.length}</div>
+        </div>
+      </div>
+      
+      ${intervals.length > 0 ? `
+      <div style="margin-top:10px;">
+        <div style="color:#6b7a90; font-size:12px; margin-bottom:4px;">Интервалы между действиями (ms):</div>
+        <div style="display:flex; gap:2px; height:30px; align-items:flex-end;">
+          ${intervals.slice(-10).map(interval => {
+            const height = Math.min(30, Math.max(5, interval / 50));
+            const color = interval < 200 ? '#ef4444' : (interval > 2000 ? '#10b981' : '#f59e0b');
+            return `<div style="flex:1; background:${color}; height:${height}px; border-radius:2px 2px 0 0;" title="${interval}ms"></div>`;
+          }).join('')}
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:9px; color:#aaa; margin-top:2px;">
+          <span>быстро</span>
+          <span>медленно</span>
+        </div>
+      </div>
+      ` : ''}
+    </div>
+    
+    <div style="padding:16px; border-bottom:1px solid #eef2f6;">
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">🕵️ ПОВЕДЕНЧЕСКИЙ АНАЛИЗ</div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+        <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
+          <div style="color:#6b7a90; font-size:12px;">Клики</div>
+          <div style="font-weight:700; font-size:18px;">${clickCount}</div>
+        </div>
+        <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
+          <div style="color:#6b7a90; font-size:12px;">Ввод</div>
+          <div style="font-weight:700; font-size:18px;">${inputCount}</div>
+        </div>
+        <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
+          <div style="color:#6b7a90; font-size:12px;">Вставки (Paste)</div>
+          <div style="font-weight:700; font-size:18px; color:${pasteCount > 0 ? '#ef4444' : '#10b981'};">${pasteCount}</div>
+        </div>
+      </div>
+      
+      ${data.honeypot ? `
+      <div style="margin-top:10px; background:${data.honeypot === 'сработал' ? '#fee2e2' : '#f0fdf4'}; padding:8px; border-radius:8px; display:flex; align-items:center; gap:8px;">
+        <span style="font-size:20px;">${data.honeypot === 'сработал' ? '🍯' : '✅'}</span>
+        <div>
+          <div style="font-weight:600;">Honeypot: ${data.honeypot}</div>
+          <div style="font-size:12px;">${data.honeypot === 'сработал' ? 'Бот заполнил скрытое поле' : 'Скрытое поле не тронуто'}</div>
+        </div>
+      </div>
+      ` : ''}
+    </div>
+    
+    <div style="padding:16px;">
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">📝 ОТВЕТЫ НА ВОПРОСЫ</div>
+      <div style="display:grid; grid-template-columns:1fr; gap:6px;">
+        ${data.answers ? Object.entries(data.answers).map(([key, val]) => `
+          <div style="display:flex; background:#f8fafc; padding:6px 10px; border-radius:6px;">
+            <span style="width:100px; color:#6b7a90;">${key}:</span>
+            <span style="font-weight:500;">${val}</span>
+          </div>
+        `).join('') : '<div style="color:#6b7a90; text-align:center;">Нет данных</div>'}
+      </div>
+    </div>
+    
+    ${data.blacklisted ? `
+    <div style="margin:0 16px 16px 16px; background:#fee2e2; padding:10px; border-radius:8px; border-left:4px solid #ef4444;">
+      <div style="font-weight:600;">⛔ ЧЕРНЫЙ СПИСОК</div>
+      <div style="font-size:13px;">${data.blacklist_reason || 'Пользователь в черном списке'}</div>
+    </div>
+    ` : ''}
+  `;
+  
+  step6Result.appendChild(panel);
+}
+
+// Вспомогательная функция для расчета дисперсии
+function calculateVariance(arr) {
+  const mean = arr.reduce((a,b) => a+b, 0) / arr.length;
+  const variance = arr.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+  return Math.sqrt(variance);
+}
 
   $$(".btn-opt").forEach(btn=>{
     btn.onclick=()=>{
@@ -637,11 +789,30 @@
         if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
           throw new Error("gigabot_not_loaded");
         }
-        const result = await window.GigaBot.send({
-          type: "quiz",
-          fields
-        });
-        renderFinalResult(result || {});
+        // Собираем ВСЕ данные для анализа
+const fullData = {
+  type: "quiz",
+  fields: fields,
+  _events: events, // передаем события
+  _answers: answers, // передаем ответы
+  durationMs: Date.now() - startTime, // считаем общее время
+  userId: userId,
+  utm_source: utm_source,
+  utm_content: utm_content,
+  // Тут можно добавить любые другие данные, которые собираешь
+};
+
+const result = await window.GigaBot.send(fullData);
+
+// Обогащаем результат данными с фронта
+result._events = events;
+result.answers = answers;
+result.durationMs = fullData.durationMs;
+result.userId = userId;
+result.utm_source = utm_source;
+result.utm_content = utm_content;
+
+renderFinalResult(result);
       } catch (err) {
         renderFinalResult({
           action: "error",
