@@ -547,13 +547,40 @@
     }catch(e){ console.error("Ошибка отправки",e); }
   });
 
-  // ============================
+    // ============================
   // КОД КВИЗА (УПРОЩЕН)
   // ============================
   let step = 1;
   const total = 6;
   const answers = {};
   const events = [];
+  
+  // СОБИРАЕМ СОБЫТИЯ ДЛЯ АНТИБОТА
+  document.addEventListener('click', (e) => {
+    events.push({
+      type: 'click',
+      timestamp: Date.now(),
+      label: e.target.tagName
+    });
+  });
+
+  document.addEventListener('input', (e) => {
+    if (e.target.tagName === 'INPUT') {
+      events.push({
+        type: 'input',
+        timestamp: Date.now(),
+        label: e.target.name || e.target.id
+      });
+    }
+  });
+
+  document.addEventListener('paste', (e) => {
+    events.push({
+      type: 'paste',
+      timestamp: Date.now(),
+      label: 'paste'
+    });
+  });
 
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
@@ -801,6 +828,20 @@ const fullData = {
   utm_content: utm_content,
   // Тут можно добавить любые другие данные, которые собираешь
 };
+
+// Ждем загрузки GigaBot
+if (!window.GigaBot) {
+  let attempts = 0;
+  while (attempts < 20) {
+    await new Promise(r => setTimeout(r, 200));
+    if (window.GigaBot) break;
+    attempts++;
+  }
+}
+
+if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
+  throw new Error("gigabot_not_loaded");
+}
 
 const result = await window.GigaBot.send(fullData);
 
