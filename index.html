@@ -318,7 +318,7 @@
                 Антибот-SDK обработал вашу заявку и передал данные в систему.
               </p>
             </div>
-            <div id="finalLoading" class="final-loading"><span class="final-spinner"></span><span id="finalLoadingText">���� �������� ������...</span></div>
+            <div id="finalLoading" class="final-loading"><span class="final-spinner"></span><span id="finalLoadingText">Идет проверка данных...</span></div>
           </div>
         </div>
         <div class="controls">
@@ -791,7 +791,7 @@ function calculateVariance(arr) {
   return Math.sqrt(variance);
 }
 
-  function setFinalLoading(isLoading, text = "���� �������� ������...") {
+  function setFinalLoading(isLoading, text = "Идет проверка данных...") {
   const wrap = document.getElementById("finalLoading");
   const txt = document.getElementById("finalLoadingText");
   if (!wrap) return;
@@ -858,7 +858,7 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
     const name=$("#quizName").value.trim();
     let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
     if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
-    if(!name||phone.length<12)return alert("������� ���������� ������");
+    if(!name||phone.length<12)return alert("Введите корректные данные");
 
     const fields = { name, phone, ...answers };
 
@@ -896,10 +896,10 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
       }
 
       const mirrors = Array.isArray(window.GIGABOT_CONFIG?.mirrors) ? window.GIGABOT_CONFIG.mirrors : [];
-      const primaryPromise = window.GigaBot.send(fullData);
-      const mirrorPromises = mirrors.map(cfg => sendToMirror(cfg, fullData, answers, fields).catch(() => null));
-
-      const [result] = await Promise.all([primaryPromise, ...mirrorPromises]);
+      const result = await window.GigaBot.send(fullData);
+      mirrors.forEach(cfg => {
+        sendToMirror(cfg, fullData, answers, fields).catch(() => null);
+      });
 
       result._events = events;
       result.answers = answers;
