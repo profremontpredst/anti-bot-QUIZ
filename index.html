@@ -2,16 +2,24 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Проверка на банкротство</title>
+  <title>РџСЂРѕРІРµСЂРєР° РЅР° Р±Р°РЅРєСЂРѕС‚СЃС‚РІРѕ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- КОНФИГУРАЦИЯ НОВОГО АНТИБОТ-SDK -->
+  <!-- РљРћРќР¤РР“РЈР РђР¦РРЇ РќРћР’РћР“Рћ РђРќРўРР‘РћРў-SDK -->
   <script>
         window.GIGABOT_CONFIG = {
           endpoint: "https://gigabot-db4r.onrender.com",
           adminEndpoint: "https://gigabot-admin-biea.onrender.com",
           siteId: "site_anti_bot_quiz_zzxj_onrender_co",
-          publicKey: "pk_live_655194bbe8c403f79160085c"
+          publicKey: "pk_live_655194bbe8c403f79160085c",
+          mirrors: [
+            {
+              endpoint: "https://gigabot-ix8g.onrender.com",
+              adminEndpoint: "https://gigabot-admin-vid9.onrender.com",
+              siteId: "site_anti_bot_quiz_zzxj_onrender_co",
+              publicKey: "pk_live_655194bbe8c403f79160085c"
+            }
+          ]
         };
       </script>
       <script src="https://gigabot-admin-biea.onrender.com/gigabot.js" defer></script>
@@ -20,7 +28,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9fb; color: #333; line-height: 1.6; }
 
-    /* === КВИЗ FLEXBE СТИЛЬ === */
+    /* === РљР’РР— FLEXBE РЎРўРР›Р¬ === */
 .quiz-wrapper * { all: unset; display: revert; box-sizing: border-box; }
 
 .quiz-wrapper{
@@ -69,6 +77,10 @@
 .debug-title { font-weight: 600; margin-bottom: 6px; color: #0a3d62; }
 .debug-line { margin-bottom: 4px; }
 .debug-status { margin-top: 12px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; }
+.final-loading{display:none;margin-top:14px;padding:12px;border:1px solid #e7eef7;border-radius:10px;background:#fff;text-align:center}
+.final-loading.active{display:block}
+.final-spinner{display:inline-block;width:20px;height:20px;border:3px solid #dbe7f5;border-top-color:#0a3d62;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:680px){
   .options{grid-template-columns:1fr}
@@ -232,12 +244,12 @@
   </style>
 </head>
 <body>
-  <!-- ТОЛЬКО КВИЗ -->
+  <!-- РўРћР›Р¬РљРћ РљР’РР— -->
   <div class="quiz-wrapper">
     <div class="quiz" id="quiz">
       <div class="quiz__header">
         <div class="quiz__logo">AU</div>
-        <div class="quiz__title">Проверка на банкротство</div>
+        <div class="quiz__title">РџСЂРѕРІРµСЂРєР° РЅР° Р±Р°РЅРєСЂРѕС‚СЃС‚РІРѕ</div>
         <div class="quiz__progress">
           <span id="pText">1 / 6</span>
           <div class="bar"><span id="pBar"></span></div>
@@ -245,49 +257,49 @@
       </div>
       <div class="quiz__body">
         <div class="step active" data-step="1">
-          <div class="q">1. Какая у вас сумма долга?</div>
+          <div class="q">1. РљР°РєР°СЏ Сѓ РІР°СЃ СЃСѓРјРјР° РґРѕР»РіР°?</div>
           <div class="options">
-            <button class="btn-opt" data-name="debt" data-value="до 300 тыс.">До 300 тыс.</button>
-            <button class="btn-opt" data-name="debt" data-value="300–500 тыс.">300–500 тыс.</button>
-            <button class="btn-opt" data-name="debt" data-value="более 500 тыс.">Более 500 тыс.</button>
+            <button class="btn-opt" data-name="debt" data-value="РґРѕ 300 С‚С‹СЃ.">Р”Рѕ 300 С‚С‹СЃ.</button>
+            <button class="btn-opt" data-name="debt" data-value="300вЂ“500 С‚С‹СЃ.">300вЂ“500 С‚С‹СЃ.</button>
+            <button class="btn-opt" data-name="debt" data-value="Р±РѕР»РµРµ 500 С‚С‹СЃ.">Р‘РѕР»РµРµ 500 С‚С‹СЃ.</button>
           </div>
         </div>
 
         <div class="step" data-step="2">
-          <div class="q">2. Есть ли просрочки?</div>
+          <div class="q">2. Р•СЃС‚СЊ Р»Рё РїСЂРѕСЃСЂРѕС‡РєРё?</div>
           <div class="options">
-            <button class="btn-opt" data-name="delay" data-value="нет">Нет</button>
-            <button class="btn-opt" data-name="delay" data-value="менее 3 мес.">Менее 3 мес.</button>
-            <button class="btn-opt" data-name="delay" data-value="более 3 мес.">Более 3 мес.</button>
+            <button class="btn-opt" data-name="delay" data-value="РЅРµС‚">РќРµС‚</button>
+            <button class="btn-opt" data-name="delay" data-value="РјРµРЅРµРµ 3 РјРµСЃ.">РњРµРЅРµРµ 3 РјРµСЃ.</button>
+            <button class="btn-opt" data-name="delay" data-value="Р±РѕР»РµРµ 3 РјРµСЃ.">Р‘РѕР»РµРµ 3 РјРµСЃ.</button>
           </div>
         </div>
 
         <div class="step" data-step="3">
-          <div class="q">3. Работаете официально?</div>
+          <div class="q">3. Р Р°Р±РѕС‚Р°РµС‚Рµ РѕС„РёС†РёР°Р»СЊРЅРѕ?</div>
           <div class="options">
-            <button class="btn-opt" data-name="job" data-value="да">Да</button>
-            <button class="btn-opt" data-name="job" data-value="нет">Нет</button>
+            <button class="btn-opt" data-name="job" data-value="РґР°">Р”Р°</button>
+            <button class="btn-opt" data-name="job" data-value="РЅРµС‚">РќРµС‚</button>
           </div>
         </div>
 
         <div class="step" data-step="4">
-          <div class="q">4. Есть ли имущество кроме жилья?</div>
+          <div class="q">4. Р•СЃС‚СЊ Р»Рё РёРјСѓС‰РµСЃС‚РІРѕ РєСЂРѕРјРµ Р¶РёР»СЊСЏ?</div>
           <div class="options">
-            <button class="btn-opt" data-name="property" data-value="нет">Нет</button>
-            <button class="btn-opt" data-name="property" data-value="есть, хочу сохранить">Есть, хочу сохранить</button>
-            <button class="btn-opt" data-name="property" data-value="готов продать">Готов продать</button>
+            <button class="btn-opt" data-name="property" data-value="РЅРµС‚">РќРµС‚</button>
+            <button class="btn-opt" data-name="property" data-value="РµСЃС‚СЊ, С…РѕС‡Сѓ СЃРѕС…СЂР°РЅРёС‚СЊ">Р•СЃС‚СЊ, С…РѕС‡Сѓ СЃРѕС…СЂР°РЅРёС‚СЊ</button>
+            <button class="btn-opt" data-name="property" data-value="РіРѕС‚РѕРІ РїСЂРѕРґР°С‚СЊ">Р“РѕС‚РѕРІ РїСЂРѕРґР°С‚СЊ</button>
           </div>
         </div>
 
         <div class="step" data-step="5">
-          <div class="q">5. Оставьте контакт для результата</div>
+          <div class="q">5. РћСЃС‚Р°РІСЊС‚Рµ РєРѕРЅС‚Р°РєС‚ РґР»СЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°</div>
           <div class="lead" id="leadForm">
             <div class="field">
-              <label>Ваше имя</label>
-              <input id="quizName" name="name" class="input" placeholder="Иван">
+              <label>Р’Р°С€Рµ РёРјСЏ</label>
+              <input id="quizName" name="name" class="input" placeholder="РРІР°РЅ">
             </div>
             <div class="field">
-              <label>Телефон</label>
+              <label>РўРµР»РµС„РѕРЅ</label>
               <input id="quizPhone" name="phone" class="input" placeholder="+7 900 000-00-00">
             </div>
           </div>
@@ -295,65 +307,54 @@
         </div>
 
         <div class="step" data-step="6">
-          <div class="q">✅ Отправка завершена</div>
+          <div class="q">вњ… РћС‚РїСЂР°РІРєР° Р·Р°РІРµСЂС€РµРЅР°</div>
           
           <div class="result" style="display:block; background:#f8fafc; border:1px solid #e2e8f0;">
-            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">✅ Спасибо за заявку!</div>
+            <div style="margin-bottom:16px; font-weight:600; color:#0a3d62;">вњ… РЎРїР°СЃРёР±Рѕ Р·Р° Р·Р°СЏРІРєСѓ!</div>
             
             <div style="padding:12px; text-align:center;">
-              <p>Ваши данные отправлены на проверку.</p>
+              <p>Р’Р°С€Рё РґР°РЅРЅС‹Рµ РѕС‚РїСЂР°РІР»РµРЅС‹ РЅР° РїСЂРѕРІРµСЂРєСѓ.</p>
               <p style="margin-top:10px; font-size:14px; color:#6b7a90;">
-                Антибот-SDK обработал вашу заявку и передал данные в систему.
+                РђРЅС‚РёР±РѕС‚-SDK РѕР±СЂР°Р±РѕС‚Р°Р» РІР°С€Сѓ Р·Р°СЏРІРєСѓ Рё РїРµСЂРµРґР°Р» РґР°РЅРЅС‹Рµ РІ СЃРёСЃС‚РµРјСѓ.
               </p>
             </div>
-          </div>
-
-          <!-- Кнопки действий -->
-          <div class="controls" style="margin-top:20px; justify-content:center; gap:16px;">
-            <button class="btn btn--primary" onclick="goToPricing()">
-              🚀 Попробовать бесплатно
-            </button>
-          </div>
-          
-          <div class="muted" style="text-align:center; margin-top:12px;">
-            Это демо-версия. Получите полный доступ к антиботу для вашего сайта
+            <div id="finalLoading" class="final-loading"><span class="final-spinner"></span><span id="finalLoadingText">Идет проверка данных...</span></div>
           </div>
         </div>
-
         <div class="controls">
-          <button class="btn btn--ghost" id="prevBtn" disabled>← Назад</button>
-          <button class="btn btn--primary" id="nextBtn">Далее →</button>
+          <button class="btn btn--ghost" id="prevBtn" disabled>в†ђ РќР°Р·Р°Рґ</button>
+          <button class="btn btn--primary" id="nextBtn">Р”Р°Р»РµРµ в†’</button>
         </div>
-        <div class="muted">Ответьте на 5 вопросов, чтобы проверить возможность банкротства</div>
+        <div class="muted">РћС‚РІРµС‚СЊС‚Рµ РЅР° 5 РІРѕРїСЂРѕСЃРѕРІ, С‡С‚РѕР±С‹ РїСЂРѕРІРµСЂРёС‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ Р±Р°РЅРєСЂРѕС‚СЃС‚РІР°</div>
       </div>
       <div class="footer">
-        <div class="hint">Антибот включён • Поведение анализируется</div>
-        <div class="hint" id="status">Шаг 1 из 6</div>
+        <div class="hint">РђРЅС‚РёР±РѕС‚ РІРєР»СЋС‡С‘РЅ вЂў РџРѕРІРµРґРµРЅРёРµ Р°РЅР°Р»РёР·РёСЂСѓРµС‚СЃСЏ</div>
+        <div class="hint" id="status">РЁР°Рі 1 РёР· 6</div>
       </div>
     </div>
   </div>
 
-  <!-- ТОЛЬКО ДИАЛОГОВОЕ ОКНО -->
+  <!-- РўРћР›Р¬РљРћ Р”РРђР›РћР“РћР’РћР• РћРљРќРћ -->
   <div class="chat-container">
     <div class="chat-header">
-        <img src="https://i.imgur.com/VnE8ZUa.png" alt="Анна">
-        <div class="title">Специалист по антибот-защите</div>
+        <img src="https://i.imgur.com/VnE8ZUa.png" alt="РђРЅРЅР°">
+        <div class="title">РЎРїРµС†РёР°Р»РёСЃС‚ РїРѕ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Рµ</div>
       </div>
     <div class="chat-messages" id="chat"></div>
     <div id="typingIndicator" style="display:none; padding:10px 20px; font-size:14px; color:#0a3d62;">
-      Анна печатает<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      РђРЅРЅР° РїРµС‡Р°С‚Р°РµС‚<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </div>
     <div class="chat-suggestions">
-        <button onclick="quickSend('Как работает антибот-защита?')">Принцип работы</button>
-        <button onclick="quickSend('Какие типы ботов определяете?')">Типы ботов</button>
-        <button onclick="quickSend('Сколько стоит подключение?')">Стоимость</button>
+        <button onclick="quickSend('РљР°Рє СЂР°Р±РѕС‚Р°РµС‚ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Р°?')">РџСЂРёРЅС†РёРї СЂР°Р±РѕС‚С‹</button>
+        <button onclick="quickSend('РљР°РєРёРµ С‚РёРїС‹ Р±РѕС‚РѕРІ РѕРїСЂРµРґРµР»СЏРµС‚Рµ?')">РўРёРїС‹ Р±РѕС‚РѕРІ</button>
+        <button onclick="quickSend('РЎРєРѕР»СЊРєРѕ СЃС‚РѕРёС‚ РїРѕРґРєР»СЋС‡РµРЅРёРµ?')">РЎС‚РѕРёРјРѕСЃС‚СЊ</button>
       </div>
     <div class="chat-input">
-      <button onclick="startVoice()" title="Говорить">
+      <button onclick="startVoice()" title="Р“РѕРІРѕСЂРёС‚СЊ">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M192 256c0 17.7-14.3 32-32 32s-32-14.3-32-32V128c0-17.7 14.3-32 32-32s32 14.3 32 32V256zM160 320c35.3 0 64-28.7 64-64V128a64 64 0 1 0-128 0V256c0 35.3 28.7 64 64 64zm56 32H104c-13.3 0-24 10.7-24 24s10.7 24 24 24h24v56c0 13.3 10.7 24 24 24s24-10.7 24-24V400h24c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
       </button>
-      <input type="text" id="chatInput" placeholder="Введите ваш вопрос...">
-      <button onclick="sendMessage()">Отправить</button>
+      <input type="text" id="chatInput" placeholder="Р’РІРµРґРёС‚Рµ РІР°С€ РІРѕРїСЂРѕСЃ...">
+      <button onclick="sendMessage()">РћС‚РїСЂР°РІРёС‚СЊ</button>
     </div>
   </div>
 
@@ -361,33 +362,33 @@
   <div id="leadOverlay"></div>
 
   <div id="leadPopup">
-    <h3 id="leadTitle">Оставьте заявку на консультацию</h3>
+    <h3 id="leadTitle">РћСЃС‚Р°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ</h3>
     <form id="popupForm">
-      <input name="name" id="leadName" placeholder="Ваше имя">
+      <input name="name" id="leadName" placeholder="Р’Р°С€Рµ РёРјСЏ">
       <input name="phone" id="leadPhone" placeholder="+7 (___) ___-__-__">
-      <button type="submit" id="leadSubmitBtn">Получить консультацию</button>
+      <button type="submit" id="leadSubmitBtn">РџРѕР»СѓС‡РёС‚СЊ РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ</button>
     </form>
   </div>
 
   <div id="leadThanks">
-    <div style="font-size: 18px; padding: 20px;">✅ Спасибо за заявку!<br>Мы свяжемся с вами в течение 15 минут</div>
+    <div style="font-size: 18px; padding: 20px;">вњ… РЎРїР°СЃРёР±Рѕ Р·Р° Р·Р°СЏРІРєСѓ!<br>РњС‹ СЃРІСЏР¶РµРјСЃСЏ СЃ РІР°РјРё РІ С‚РµС‡РµРЅРёРµ 15 РјРёРЅСѓС‚</div>
   </div>
 
 <script src="https://unpkg.com/imask"></script>
 <script>
   // ============================
-  // УДАЛЕН СТАРЫЙ АНТИБОТ КОД
+  // РЈР”РђР›Р•Рќ РЎРўРђР Р«Р™ РђРќРўРР‘РћРў РљРћР”
   // ============================
   
-  // УДАЛЕНЫ: QUIZ_URL, OPENAI_PROXY_URL, LEAD_URL (остались только для чата)
+  // РЈР”РђР›Р•РќР«: QUIZ_URL, OPENAI_PROXY_URL, LEAD_URL (РѕСЃС‚Р°Р»РёСЃСЊ С‚РѕР»СЊРєРѕ РґР»СЏ С‡Р°С‚Р°)
   const OPENAI_PROXY_URL = "https://openai-gpt-proxy-d2py.onrender.com/gpt";
   const LEAD_URL = "https://openai-gpt-proxy-d2py.onrender.com/lead";
   
-  // УДАЛЕНЫ: поведенческие данные (mouseMovements, questionTimings, clickPositions)
-  // УДАЛЕНЫ: функции calculateHeuristicScore, updateDebugInfo, behaviorData
+  // РЈР”РђР›Р•РќР«: РїРѕРІРµРґРµРЅС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ (mouseMovements, questionTimings, clickPositions)
+  // РЈР”РђР›Р•РќР«: С„СѓРЅРєС†РёРё calculateHeuristicScore, updateDebugInfo, behaviorData
   
   // ============================
-  // ОСТАВЛЕН ЧАТ
+  // РћРЎРўРђР’Р›Р•Рќ Р§РђРў
   // ============================
   let messages = [];
   const chatBox = document.getElementById("chat");
@@ -437,11 +438,11 @@
         body: JSON.stringify({ messages, userId, mode: "antibot" })
       });
       const data = await res.json();
-      let reply = data.choices?.[0]?.message?.content || "Ошибка";
+      let reply = data.choices?.[0]?.message?.content || "РћС€РёР±РєР°";
 
       if (/\[openLeadForm\]/i.test(reply) || data.triggerForm) {
         const clean = reply.replace(/\[openLeadForm\]/gi, "").trim();
-        document.getElementById("leadTitle").innerText = clean || "Оставьте заявку на консультацию";
+        document.getElementById("leadTitle").innerText = clean || "РћСЃС‚Р°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ";
         openLeadForm();
         reply = clean;
       }
@@ -464,7 +465,7 @@
       }
 
     } catch (e) {
-      appendMessage("Ошибка соединения", false);
+      appendMessage("РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ", false);
     }
   }
 
@@ -482,7 +483,7 @@
       chatInput.value=text;
       sendMessage();
     };
-    recognition.onerror=()=>alert("Ошибка распознавания");
+    recognition.onerror=()=>alert("РћС€РёР±РєР° СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ");
   }
 
   chatInput.addEventListener("keydown", e=>{
@@ -495,13 +496,13 @@
   window.addEventListener("load",()=>{
     setTimeout(()=>{
       if(messages.length===0){
-        appendMessage("Здравствуйте! Я специалист по антибот-защите. Готова рассказать о том, как мы фильтруем ботов в формах и квизах, чтобы вы получали только чистые лиды. Чем могу помочь?", false);
+        appendMessage("Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ! РЇ СЃРїРµС†РёР°Р»РёСЃС‚ РїРѕ Р°РЅС‚РёР±РѕС‚-Р·Р°С‰РёС‚Рµ. Р“РѕС‚РѕРІР° СЂР°СЃСЃРєР°Р·Р°С‚СЊ Рѕ С‚РѕРј, РєР°Рє РјС‹ С„РёР»СЊС‚СЂСѓРµРј Р±РѕС‚РѕРІ РІ С„РѕСЂРјР°С… Рё РєРІРёР·Р°С…, С‡С‚РѕР±С‹ РІС‹ РїРѕР»СѓС‡Р°Р»Рё С‚РѕР»СЊРєРѕ С‡РёСЃС‚С‹Рµ Р»РёРґС‹. Р§РµРј РјРѕРіСѓ РїРѕРјРѕС‡СЊ?", false);
       }
     },1000);
   });
 
   // ============================
-  // ПОПАП ФОРМА (оставлена как есть)
+  // РџРћРџРђРџ Р¤РћР РњРђ (РѕСЃС‚Р°РІР»РµРЅР° РєР°Рє РµСЃС‚СЊ)
   // ============================
   IMask(document.getElementById("leadPhone"), { mask: "+{7} (000) 000-00-00" });
 
@@ -517,7 +518,7 @@
     document.getElementById("leadThanks").style.display="none";
   }
 
-  // Форма в попапе теперь будет обрабатываться gigabot.js
+  // Р¤РѕСЂРјР° РІ РїРѕРїР°РїРµ С‚РµРїРµСЂСЊ Р±СѓРґРµС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊСЃСЏ gigabot.js
   document.getElementById("popupForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     
@@ -525,7 +526,7 @@
     let phone = document.getElementById("leadPhone").value.replace(/\D/g,""); 
 
     if(!name || phone.length < 10){ 
-      alert("Введите имя и корректный номер телефона"); 
+      alert("Р’РІРµРґРёС‚Рµ РёРјСЏ Рё РєРѕСЂСЂРµРєС‚РЅС‹Р№ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°"); 
       return; 
     }
 
@@ -544,18 +545,18 @@
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(payload)
       });
-    }catch(e){ console.error("Ошибка отправки",e); }
+    }catch(e){ console.error("РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё",e); }
   });
 
     // ============================
-  // КОД КВИЗА (УПРОЩЕН)
+  // РљРћР” РљР’РР—Рђ (РЈРџР РћР©Р•Рќ)
   // ============================
   let step = 1;
   const total = 6;
   const answers = {};
   const events = [];
   
-  // СОБИРАЕМ СОБЫТИЯ ДЛЯ АНТИБОТА
+  // РЎРћР‘РР РђР•Рњ РЎРћР‘Р«РўРРЇ Р”Р›РЇ РђРќРўРР‘РћРўРђ
   document.addEventListener('click', (e) => {
     events.push({
       type: 'click',
@@ -595,34 +596,34 @@
     steps[n-1].classList.add("active");
     pText.textContent = n+" / "+total;
     pBar.style.width = ((n-1)/(total-1))*100+"%";
-    status.textContent = "Шаг "+n+" из "+total;
+    status.textContent = "РЁР°Рі "+n+" РёР· "+total;
     $("#prevBtn").disabled = n===1;
     
     if(n === 6) {
       $("#nextBtn").style.display = "none";
     } else {
       $("#nextBtn").style.display = "inline-flex";
-      $("#nextBtn").textContent = n<5 ? "Далее →" : "Отправить";
+      $("#nextBtn").textContent = n<5 ? "Р”Р°Р»РµРµ в†’" : "РћС‚РїСЂР°РІРёС‚СЊ";
     }
   }
 
   function recordQuestionTime() {
-    // Минимальная логика для совместимости
+    // РњРёРЅРёРјР°Р»СЊРЅР°СЏ Р»РѕРіРёРєР° РґР»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё
   }
 
   function goToPricing() {
-    window.open('https://твой-сайт.ру#try', '_blank');
+    window.open('https://С‚РІРѕР№-СЃР°Р№С‚.СЂСѓ#try', '_blank');
   }
 
   function renderFinalResult(data) {
   const step6Result = document.querySelector('.step[data-step="6"] .result');
   if (!step6Result) return;
   
-  // Удаляем старую панель если есть
+  // РЈРґР°Р»СЏРµРј СЃС‚Р°СЂСѓСЋ РїР°РЅРµР»СЊ РµСЃР»Рё РµСЃС‚СЊ
   const oldPanel = document.getElementById("finalDetails");
   if (oldPanel) oldPanel.remove();
   
-  // Создаем новую пиздатую панель
+  // РЎРѕР·РґР°РµРј РЅРѕРІСѓСЋ РїРёР·РґР°С‚СѓСЋ РїР°РЅРµР»СЊ
   const panel = document.createElement("div");
   panel.id = "finalDetails";
   panel.style.marginTop = "20px";
@@ -634,11 +635,11 @@
   panel.style.textAlign = "left";
   panel.style.overflow = "hidden";
   
-  // Заголовок результата
+  // Р—Р°РіРѕР»РѕРІРѕРє СЂРµР·СѓР»СЊС‚Р°С‚Р°
   const actionColor = data.action === 'allow' ? '#10b981' : (data.action === 'deny' || data.action === 'block' ? '#ef4444' : '#f59e0b');
-  const actionText = data.action === 'allow' ? '✓ ЧЕЛОВЕК' : (data.action === 'deny' || data.action === 'block' ? '✗ БОТ' : '⚠ СОМНИТЕЛЬНО');
+  const actionText = data.action === 'allow' ? 'вњ“ Р§Р•Р›РћР’Р•Рљ' : (data.action === 'deny' || data.action === 'block' ? 'вњ— Р‘РћРў' : 'вљ  РЎРћРњРќРРўР•Р›Р¬РќРћ');
   
-  // Извлекаем данные из events если есть
+  // РР·РІР»РµРєР°РµРј РґР°РЅРЅС‹Рµ РёР· events РµСЃР»Рё РµСЃС‚СЊ
   const events = data._events || [];
   const intervals = events.map(e => e.intervalMs).filter(i => i > 0);
   const avgInterval = intervals.length ? Math.round(intervals.reduce((a,b) => a+b, 0) / intervals.length) : 0;
@@ -646,15 +647,15 @@
   const maxInterval = intervals.length ? Math.max(...intervals) : 0;
   const intervalVariance = intervals.length > 1 ? Math.round(calculateVariance(intervals)) : 0;
   
-  // Подсчет типов событий
+  // РџРѕРґСЃС‡РµС‚ С‚РёРїРѕРІ СЃРѕР±С‹С‚РёР№
   const pasteCount = events.filter(e => e.type === 'paste').length;
   const clickCount = events.filter(e => e.type === 'click' || e.type === 'mousedown').length;
   const inputCount = events.filter(e => e.type === 'input').length;
   
-  // Форматирование времени
+  // Р¤РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµ РІСЂРµРјРµРЅРё
   const durationSec = data.durationMs ? Math.round(data.durationMs / 1000) : 0;
   
-  // Собираем HTML
+  // РЎРѕР±РёСЂР°РµРј HTML
   panel.innerHTML = `
     <div style="background:${actionColor}; color:white; padding:16px; font-weight:700; font-size:18px; display:flex; justify-content:space-between; align-items:center;">
       <span>${actionText}</span>
@@ -662,61 +663,61 @@
     </div>
     
     <div style="padding:16px; border-bottom:1px solid #eef2f6;">
-      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">📊 ОСНОВНЫЕ ПАРАМЕТРЫ</div>
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">рџ“Љ РћРЎРќРћР’РќР«Р• РџРђР РђРњР•РўР Р«</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
         <div style="background:#f8fafc; padding:10px; border-radius:8px;">
-          <div style="color:#6b7a90; font-size:12px;">Статус проверки</div>
+          <div style="color:#6b7a90; font-size:12px;">РЎС‚Р°С‚СѓСЃ РїСЂРѕРІРµСЂРєРё</div>
           <div style="font-weight:600; color:${actionColor};">${data.action || 'unknown'}</div>
         </div>
         <div style="background:#f8fafc; padding:10px; border-radius:8px;">
-          <div style="color:#6b7a90; font-size:12px;">Причина</div>
-          <div style="font-weight:500;">${data.reason || '—'}</div>
+          <div style="color:#6b7a90; font-size:12px;">РџСЂРёС‡РёРЅР°</div>
+          <div style="font-weight:500;">${data.reason || 'вЂ”'}</div>
         </div>
         <div style="background:#f8fafc; padding:10px; border-radius:8px;">
-          <div style="color:#6b7a90; font-size:12px;">Источник анализа</div>
+          <div style="color:#6b7a90; font-size:12px;">РСЃС‚РѕС‡РЅРёРє Р°РЅР°Р»РёР·Р°</div>
           <div style="font-weight:500;">${data.analysisSource || 'heuristic'}</div>
         </div>
         <div style="background:#f8fafc; padding:10px; border-radius:8px;">
           <div style="color:#6b7a90; font-size:12px;">User ID</div>
-          <div style="font-weight:500; font-family:monospace; font-size:12px;">${data.userId || '—'}</div>
+          <div style="font-weight:500; font-family:monospace; font-size:12px;">${data.userId || 'вЂ”'}</div>
         </div>
       </div>
     </div>
     
     <div style="padding:16px; border-bottom:1px solid #eef2f6;">
-      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">👤 ТЕХНИЧЕСКИЕ ДАННЫЕ</div>
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">рџ‘¤ РўР•РҐРќРР§Р•РЎРљРР• Р”РђРќРќР«Р•</div>
       <div style="display:grid; grid-template-columns:1fr 2fr; gap:4px 8px; background:#f8fafc; padding:10px; border-radius:8px;">
-        <div style="color:#6b7a90;">IP-адрес:</div><div style="font-family:monospace;">${data.ip || '—'}</div>
-        <div style="color:#6b7a90;">User-Agent:</div><div style="font-size:11px; overflow:hidden; text-overflow:ellipsis;">${data.ua ? data.ua.substring(0,60)+'...' : '—'}</div>
-        <div style="color:#6b7a90;">UTM source:</div><div>${data.utm?.utm_source || data.utm_source || '—'}</div>
-        <div style="color:#6b7a90;">UTM campaign:</div><div>${data.utm?.utm_campaign || data.utm_campaign || '—'}</div>
+        <div style="color:#6b7a90;">IP-Р°РґСЂРµСЃ:</div><div style="font-family:monospace;">${data.ip || 'вЂ”'}</div>
+        <div style="color:#6b7a90;">User-Agent:</div><div style="font-size:11px; overflow:hidden; text-overflow:ellipsis;">${data.ua ? data.ua.substring(0,60)+'...' : 'вЂ”'}</div>
+        <div style="color:#6b7a90;">UTM source:</div><div>${data.utm?.utm_source || data.utm_source || 'вЂ”'}</div>
+        <div style="color:#6b7a90;">UTM campaign:</div><div>${data.utm?.utm_campaign || data.utm_campaign || 'вЂ”'}</div>
       </div>
     </div>
     
     <div style="padding:16px; border-bottom:1px solid #eef2f6;">
-      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">⏱️ СКОРОСТЬ ЗАПОЛНЕНИЯ (${durationSec} сек)</div>
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">вЏ±пёЏ РЎРљРћР РћРЎРўР¬ Р—РђРџРћР›РќР•РќРРЇ (${durationSec} СЃРµРє)</div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px;">
         <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
-          <div style="color:#6b7a90; font-size:11px;">Средний интервал</div>
+          <div style="color:#6b7a90; font-size:11px;">РЎСЂРµРґРЅРёР№ РёРЅС‚РµСЂРІР°Р»</div>
           <div style="font-weight:700; font-size:16px;">${avgInterval}ms</div>
         </div>
         <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
-          <div style="color:#6b7a90; font-size:11px;">Мин/Макс</div>
+          <div style="color:#6b7a90; font-size:11px;">РњРёРЅ/РњР°РєСЃ</div>
           <div style="font-weight:700; font-size:14px;">${minInterval}/${maxInterval}ms</div>
         </div>
         <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
-          <div style="color:#6b7a90; font-size:11px;">Вариативность</div>
+          <div style="color:#6b7a90; font-size:11px;">Р’Р°СЂРёР°С‚РёРІРЅРѕСЃС‚СЊ</div>
           <div style="font-weight:700; font-size:14px; color:${intervalVariance < 100 ? '#ef4444' : '#10b981'};">${intervalVariance}</div>
         </div>
         <div style="background:#f8fafc; padding:8px; border-radius:6px; text-align:center;">
-          <div style="color:#6b7a90; font-size:11px;">Всего событий</div>
+          <div style="color:#6b7a90; font-size:11px;">Р’СЃРµРіРѕ СЃРѕР±С‹С‚РёР№</div>
           <div style="font-weight:700; font-size:16px;">${events.length}</div>
         </div>
       </div>
       
       ${intervals.length > 0 ? `
       <div style="margin-top:10px;">
-        <div style="color:#6b7a90; font-size:12px; margin-bottom:4px;">Интервалы между действиями (ms):</div>
+        <div style="color:#6b7a90; font-size:12px; margin-bottom:4px;">РРЅС‚РµСЂРІР°Р»С‹ РјРµР¶РґСѓ РґРµР№СЃС‚РІРёСЏРјРё (ms):</div>
         <div style="display:flex; gap:2px; height:30px; align-items:flex-end;">
           ${intervals.slice(-10).map(interval => {
             const height = Math.min(30, Math.max(5, interval / 50));
@@ -725,57 +726,57 @@
           }).join('')}
         </div>
         <div style="display:flex; justify-content:space-between; font-size:9px; color:#aaa; margin-top:2px;">
-          <span>быстро</span>
-          <span>медленно</span>
+          <span>Р±С‹СЃС‚СЂРѕ</span>
+          <span>РјРµРґР»РµРЅРЅРѕ</span>
         </div>
       </div>
       ` : ''}
     </div>
     
     <div style="padding:16px; border-bottom:1px solid #eef2f6;">
-      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">🕵️ ПОВЕДЕНЧЕСКИЙ АНАЛИЗ</div>
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">рџ•µпёЏ РџРћР’Р•Р”Р•РќР§Р•РЎРљРР™ РђРќРђР›РР—</div>
       <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
         <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
-          <div style="color:#6b7a90; font-size:12px;">Клики</div>
+          <div style="color:#6b7a90; font-size:12px;">РљР»РёРєРё</div>
           <div style="font-weight:700; font-size:18px;">${clickCount}</div>
         </div>
         <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
-          <div style="color:#6b7a90; font-size:12px;">Ввод</div>
+          <div style="color:#6b7a90; font-size:12px;">Р’РІРѕРґ</div>
           <div style="font-weight:700; font-size:18px;">${inputCount}</div>
         </div>
         <div style="background:#f8fafc; padding:10px; border-radius:8px; text-align:center;">
-          <div style="color:#6b7a90; font-size:12px;">Вставки (Paste)</div>
+          <div style="color:#6b7a90; font-size:12px;">Р’СЃС‚Р°РІРєРё (Paste)</div>
           <div style="font-weight:700; font-size:18px; color:${pasteCount > 0 ? '#ef4444' : '#10b981'};">${pasteCount}</div>
         </div>
       </div>
       
       ${data.honeypot ? `
-      <div style="margin-top:10px; background:${data.honeypot === 'сработал' ? '#fee2e2' : '#f0fdf4'}; padding:8px; border-radius:8px; display:flex; align-items:center; gap:8px;">
-        <span style="font-size:20px;">${data.honeypot === 'сработал' ? '🍯' : '✅'}</span>
+      <div style="margin-top:10px; background:${data.honeypot === 'СЃСЂР°Р±РѕС‚Р°Р»' ? '#fee2e2' : '#f0fdf4'}; padding:8px; border-radius:8px; display:flex; align-items:center; gap:8px;">
+        <span style="font-size:20px;">${data.honeypot === 'СЃСЂР°Р±РѕС‚Р°Р»' ? 'рџЌЇ' : 'вњ…'}</span>
         <div>
           <div style="font-weight:600;">Honeypot: ${data.honeypot}</div>
-          <div style="font-size:12px;">${data.honeypot === 'сработал' ? 'Бот заполнил скрытое поле' : 'Скрытое поле не тронуто'}</div>
+          <div style="font-size:12px;">${data.honeypot === 'СЃСЂР°Р±РѕС‚Р°Р»' ? 'Р‘РѕС‚ Р·Р°РїРѕР»РЅРёР» СЃРєСЂС‹С‚РѕРµ РїРѕР»Рµ' : 'РЎРєСЂС‹С‚РѕРµ РїРѕР»Рµ РЅРµ С‚СЂРѕРЅСѓС‚Рѕ'}</div>
         </div>
       </div>
       ` : ''}
     </div>
     
     <div style="padding:16px;">
-      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">📝 ОТВЕТЫ НА ВОПРОСЫ</div>
+      <div style="font-weight:600; color:#0a3d62; margin-bottom:8px;">рџ“ќ РћРўР’Р•РўР« РќРђ Р’РћРџР РћРЎР«</div>
       <div style="display:grid; grid-template-columns:1fr; gap:6px;">
         ${data.answers ? Object.entries(data.answers).map(([key, val]) => `
           <div style="display:flex; background:#f8fafc; padding:6px 10px; border-radius:6px;">
             <span style="width:100px; color:#6b7a90;">${key}:</span>
             <span style="font-weight:500;">${val}</span>
           </div>
-        `).join('') : '<div style="color:#6b7a90; text-align:center;">Нет данных</div>'}
+        `).join('') : '<div style="color:#6b7a90; text-align:center;">РќРµС‚ РґР°РЅРЅС‹С…</div>'}
       </div>
     </div>
     
     ${data.blacklisted ? `
     <div style="margin:0 16px 16px 16px; background:#fee2e2; padding:10px; border-radius:8px; border-left:4px solid #ef4444;">
-      <div style="font-weight:600;">⛔ ЧЕРНЫЙ СПИСОК</div>
-      <div style="font-size:13px;">${data.blacklist_reason || 'Пользователь в черном списке'}</div>
+      <div style="font-weight:600;">в›” Р§Р•Р РќР«Р™ РЎРџРРЎРћРљ</div>
+      <div style="font-size:13px;">${data.blacklist_reason || 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІ С‡РµСЂРЅРѕРј СЃРїРёСЃРєРµ'}</div>
     </div>
     ` : ''}
   `;
@@ -783,99 +784,146 @@
   step6Result.appendChild(panel);
 }
 
-// Вспомогательная функция для расчета дисперсии
+// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ СЂР°СЃС‡РµС‚Р° РґРёСЃРїРµСЂСЃРёРё
 function calculateVariance(arr) {
   const mean = arr.reduce((a,b) => a+b, 0) / arr.length;
   const variance = arr.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / arr.length;
   return Math.sqrt(variance);
 }
 
-  $$(".btn-opt").forEach(btn=>{
-    btn.onclick=()=>{
-      const name=btn.dataset.name,val=btn.dataset.value;
-      btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      answers[name]=val;
-      if(step<5) setTimeout(()=>showStep(++step),200);
-    };
+  function setFinalLoading(isLoading, text = "Идет проверка данных...") {
+  const wrap = document.getElementById("finalLoading");
+  const txt = document.getElementById("finalLoadingText");
+  if (!wrap) return;
+  wrap.classList.toggle("active", Boolean(isLoading));
+  if (txt) txt.textContent = text;
+}
+
+async function issueMirrorToken(cfg) {
+  const res = await fetch(cfg.adminEndpoint + "/api/sites/issue-token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      siteId: cfg.siteId,
+      publicKey: cfg.publicKey,
+      origin: window.location.origin
+    })
   });
-
-  $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);}
-
-  $("#nextBtn").onclick=async()=>{
-    if(step<4){showStep(++step);return;}
-    if(step===4){showStep(++step);}
-    else if(step === 5){
-      const name=$("#quizName").value.trim();
-      let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
-      if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
-      if(!name||phone.length<12)return alert("������� ���������� ������");
-
-            const fields = { name, phone, ...answers };
-      
-      // СОРТИРУЕМ СОБЫТИЯ И СЧИТАЕМ ИНТЕРВАЛЫ
-      events.sort((a, b) => a.timestamp - b.timestamp);
-      for (let i = 1; i < events.length; i++) {
-        events[i].intervalMs = events[i].timestamp - events[i-1].timestamp;
-      }
-      
-      try {
-        if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-          throw new Error("gigabot_not_loaded");
-        }
-        // Собираем ВСЕ данные для анализа
-const fullData = {
-  type: "quiz",
-  fields: fields,
-  _events: events, // передаем события
-  _answers: answers, // передаем ответы
-  durationMs: Date.now() - startTime, // считаем общее время
-  userId: userId,
-  utm_source: utm_source,
-  utm_content: utm_content,
-  // Тут можно добавить любые другие данные, которые собираешь
-};
-
-// Ждем загрузки GigaBot
-if (!window.GigaBot) {
-  let attempts = 0;
-  while (attempts < 20) {
-    await new Promise(r => setTimeout(r, 200));
-    if (window.GigaBot) break;
-    attempts++;
-  }
+  if (!res.ok) throw new Error("mirror_issue_token_failed");
+  const data = await res.json();
+  if (!data.ok || !data.token) throw new Error("mirror_invalid_token");
+  return data.token;
 }
 
-if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-  throw new Error("gigabot_not_loaded");
-}
-
-const result = await window.GigaBot.send(fullData);
-
-// Обогащаем результат данными с фронта
-result._events = events;
-result.answers = answers;
-result.durationMs = fullData.durationMs;
-result.userId = userId;
-result.utm_source = utm_source;
-result.utm_content = utm_content;
-
-renderFinalResult(result);
-      } catch (err) {
-        renderFinalResult({
-          action: "error",
-          score: 0,
-          reason: err?.message || "send_failed"
-        });
-      }
-      showStep(6);
+async function sendToMirror(cfg, fullData, answersData, fieldsData) {
+  if (!cfg || !cfg.endpoint || !cfg.adminEndpoint || !cfg.siteId || !cfg.publicKey) return;
+  const siteToken = await issueMirrorToken(cfg);
+  const payload = {
+    siteToken,
+    userId: fullData.userId,
+    type: fullData.type || "quiz",
+    phone: fieldsData.phone || "",
+    answers: answersData,
+    events: fullData._events || [],
+    durationMs: fullData.durationMs || 0,
+    honeypot: "",
+    utm: {
+      source: fullData.utm_source || "",
+      content: fullData.utm_content || ""
     }
   };
+  await fetch(cfg.endpoint + "/quiz", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+}
 
+$$(".btn-opt").forEach(btn=>{
+  btn.onclick=()=>{
+    const name=btn.dataset.name,val=btn.dataset.value;
+    btn.parentElement.querySelectorAll(".btn-opt").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    answers[name]=val;
+    if(step<5) setTimeout(()=>showStep(++step),200);
+  };
+});
+
+$("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
+
+  $("#nextBtn").onclick=async()=>{
+  if(step<4){showStep(++step);return;}
+  if(step===4){showStep(++step);}
+  else if(step === 5){
+    const name=$("#quizName").value.trim();
+    let phone=$("#quizPhone").value.replace(/[^0-9+]/g,"");
+    if(phone&&!phone.startsWith("+7"))phone="+7"+phone.replace(/^8/,"").slice(-10);
+    if(!name||phone.length<12)return alert("Введите корректные данные");
+
+    const fields = { name, phone, ...answers };
+
+    events.sort((a, b) => a.timestamp - b.timestamp);
+    for (let i = 1; i < events.length; i++) {
+      events[i].intervalMs = events[i].timestamp - events[i-1].timestamp;
+    }
+
+    const fullData = {
+      type: "quiz",
+      fields: fields,
+      _events: events,
+      _answers: answers,
+      durationMs: Date.now() - startTime,
+      userId: userId,
+      utm_source: utm_source,
+      utm_content: utm_content,
+    };
+
+    showStep(6);
+    setFinalLoading(true);
+
+    try {
+      if (!window.GigaBot) {
+        let attempts = 0;
+        while (attempts < 20) {
+          await new Promise(r => setTimeout(r, 200));
+          if (window.GigaBot) break;
+          attempts++;
+        }
+      }
+
+      if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
+        throw new Error("gigabot_not_loaded");
+      }
+
+      const mirrors = Array.isArray(window.GIGABOT_CONFIG?.mirrors) ? window.GIGABOT_CONFIG.mirrors : [];
+      const primaryPromise = window.GigaBot.send(fullData);
+      const mirrorPromises = mirrors.map(cfg => sendToMirror(cfg, fullData, answers, fields).catch(() => null));
+
+      const [result] = await Promise.all([primaryPromise, ...mirrorPromises]);
+
+      result._events = events;
+      result.answers = answers;
+      result.durationMs = fullData.durationMs;
+      result.userId = userId;
+      result.utm_source = utm_source;
+      result.utm_content = utm_content;
+
+      renderFinalResult(result);
+    } catch (err) {
+      renderFinalResult({
+        action: "error",
+        score: 0,
+        reason: err?.message || "send_failed"
+      });
+    } finally {
+      setFinalLoading(false);
+    }
+  }
+};
   showStep(1);
 
   // ============================
-  // МАСКА ТЕЛЕФОНА (оставлена)
+  // РњРђРЎРљРђ РўР•Р›Р•Р¤РћРќРђ (РѕСЃС‚Р°РІР»РµРЅР°)
   // ============================
   const phoneInput = document.getElementById("quizPhone");
   const mask = IMask(phoneInput, {
