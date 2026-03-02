@@ -80,6 +80,19 @@
 .final-loading.active{display:block}
 .final-spinner{display:inline-block;width:20px;height:20px;border:3px solid #dbe7f5;border-top-color:#0a3d62;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
+.simple-form-wrap{
+  width:min(880px,96vw);
+  margin:16px auto 0;
+  background:#fff;
+  border:1px solid #e7eef7;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 35px rgba(10,61,98,.08);
+}
+.simple-form-title{font-size:20px;font-weight:800;color:#0a3d62;margin-bottom:6px}
+.simple-form-sub{font-size:13px;color:#6b7a90;margin-bottom:14px}
+.simple-form-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}
+.simple-form-result{margin-top:12px;padding:10px;border:1px dashed #e7eef7;border-radius:10px;background:#fbfdff;font-size:13px;color:#334155}
 
 @media(max-width:680px){
   .options{grid-template-columns:1fr}
@@ -88,6 +101,7 @@
   .quiz__progress{width:100%}
   .bar{flex:1}
   .debug-grid { grid-template-columns: 1fr; }
+  .simple-form-grid{grid-template-columns:1fr}
 }
     /* Chat block */
     .chat-container {
@@ -332,6 +346,18 @@
       </div>
     </div>
   </div>
+  <div class="simple-form-wrap">
+    <div class="simple-form-title">Тест обычной формы</div>
+    <div class="simple-form-sub">Проверка антибота без вопросов квиза (только имя и телефон)</div>
+    <form id="simpleForm">
+      <div class="simple-form-grid">
+        <input id="simpleName" name="name" class="input" placeholder="Имя">
+        <input id="simplePhone" name="phone" class="input" placeholder="+7 900 000-00-00">
+        <button type="submit" class="btn btn--primary">Проверить</button>
+      </div>
+    </form>
+    <div id="simpleFormResult" class="simple-form-result">Результат проверки появится здесь.</div>
+  </div>
 
   <!-- ТОЛЬКО ДИАЛОГОВОЕ ОКНО -->
   <div class="chat-container">
@@ -554,6 +580,8 @@
   const total = 6;
   const answers = {};
   const events = [];
+  const simpleFormEvents = [];
+  let simpleFormStart = Date.now();
   
   // СОБИРАЕМ СОБЫТИЯ ДЛЯ АНТИБОТА
   document.addEventListener('click', (e) => {
@@ -790,6 +818,14 @@ function calculateVariance(arr) {
   return Math.sqrt(variance);
 }
 
+function addSimpleEvent(type, label = "") {
+  simpleFormEvents.push({
+    type,
+    label,
+    timestamp: Date.now()
+  });
+}
+
   function setFinalLoading(isLoading, text = "Идет проверка данных...") {
   const wrap = document.getElementById("finalLoading");
   const txt = document.getElementById("finalLoadingText");
@@ -921,6 +957,63 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
 };
   showStep(1);
 
+  const simpleFormEl = document.getElementById("simpleForm");
+  const simpleResultEl = document.getElementById("simpleFormResult");
+  const simpleNameEl = document.getElementById("simpleName");
+  const simplePhoneEl = document.getElementById("simplePhone");
+
+  if (simpleFormEl && simpleResultEl && simpleNameEl && simplePhoneEl) {
+    simpleNameEl.addEventListener("input", () => addSimpleEvent("input", "name"));
+    simplePhoneEl.addEventListener("input", () => addSimpleEvent("input", "phone"));
+    simplePhoneEl.addEventListener("paste", () => addSimpleEvent("paste", "phone"));
+
+    simpleFormEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      addSimpleEvent("submit", "simple_form");
+
+      const name = simpleNameEl.value.trim();
+      const digits = simplePhoneEl.value.replace(/\D/g, "");
+      if (!name || digits.length < 10) {
+        simpleResultEl.textContent = "Введите корректные имя и телефон.";
+        return;
+      }
+
+      const phone = "+7" + digits.slice(-10);
+      const prepared = simpleFormEvents
+        .map(ev => ({ ...ev }))
+        .sort((a, b) => a.timestamp - b.timestamp);
+      for (let i = 1; i < prepared.length; i++) {
+        prepared[i].intervalMs = prepared[i].timestamp - prepared[i - 1].timestamp;
+      }
+
+      simpleResultEl.textContent = "Отправка на антибот...";
+      try {
+        if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
+          throw new Error("gigabot_not_loaded");
+        }
+
+        const result = await window.GigaBot.send({
+          type: "simple-form-test",
+          fields: { name, phone },
+          answers: { name, phone },
+          events: prepared,
+          durationMs: Date.now() - simpleFormStart,
+          userId,
+          utm: {
+            source: utm_source,
+            content: utm_content
+          }
+        });
+
+        simpleResultEl.textContent = `action=${result.action || "unknown"}, score=${result.score ?? "?"}, reason=${result.reason || "—"}`;
+        simpleFormEvents.length = 0;
+        simpleFormStart = Date.now();
+      } catch (err) {
+        simpleResultEl.textContent = `Ошибка отправки: ${err?.message || "unknown_error"}`;
+      }
+    });
+  }
+
   // ============================
   // МАСКА ТЕЛЕФОНА (оставлена)
   // ============================
@@ -939,6 +1032,15 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
       mask.updateValue();
     }
   });
+
+  const simplePhoneInput = document.getElementById("simplePhone");
+  if (simplePhoneInput) {
+    IMask(simplePhoneInput, {
+      mask: '+{7} (000) 000-00-00',
+      lazy: false,
+      placeholderChar: '_'
+    });
+  }
 </script>
 </body>
 </html>
