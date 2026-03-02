@@ -93,6 +93,8 @@
 .simple-form-sub{font-size:13px;color:#6b7a90;margin-bottom:14px}
 .simple-form-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}
 .simple-form-result{margin-top:12px;padding:10px;border:1px dashed #e7eef7;border-radius:10px;background:#fbfdff;font-size:13px;color:#334155}
+.simple-form-loading{display:none;margin-top:12px;padding:12px;border:1px solid #e7eef7;border-radius:10px;background:#fff;text-align:center}
+.simple-form-loading.active{display:block}
 
 @media(max-width:680px){
   .options{grid-template-columns:1fr}
@@ -349,13 +351,14 @@
   <div class="simple-form-wrap">
     <div class="simple-form-title">Тест обычной формы</div>
     <div class="simple-form-sub">Проверка антибота без вопросов квиза (только имя и телефон)</div>
-    <form id="simpleForm">
+    <form id="simpleForm" data-gigabot-ignore="1">
       <div class="simple-form-grid">
         <input id="simpleName" name="name" class="input" placeholder="Имя">
         <input id="simplePhone" name="phone" class="input" placeholder="+7 900 000-00-00">
         <button type="submit" class="btn btn--primary">Проверить</button>
       </div>
     </form>
+    <div id="simpleFormLoading" class="simple-form-loading"><span class="final-spinner"></span>Идет проверка данных...</div>
     <div id="simpleFormResult" class="simple-form-result">Результат проверки появится здесь.</div>
   </div>
 
@@ -419,8 +422,18 @@
   const chatBox = document.getElementById("chat");
   const chatInput = document.getElementById("chatInput");
 
-  let userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
-  localStorage.setItem("userId", userId);
+  function getUnifiedUserId() {
+    const bySdk = localStorage.getItem("gigabot_uid");
+    const byPage = localStorage.getItem("userId");
+    let uid = bySdk || byPage;
+    if (!uid) {
+      uid = "user_" + Math.random().toString(36).slice(2, 10);
+    }
+    localStorage.setItem("gigabot_uid", uid);
+    localStorage.setItem("userId", uid);
+    return uid;
+  }
+  let userId = getUnifiedUserId();
 
   let startTime = Date.now();
 
@@ -826,6 +839,43 @@ function addSimpleEvent(type, label = "") {
   });
 }
 
+function setSimpleLoading(isLoading, text = "Идет проверка данных...") {
+  const wrap = document.getElementById("simpleFormLoading");
+  if (!wrap) return;
+  wrap.classList.toggle("active", Boolean(isLoading));
+  wrap.innerHTML = `<span class="final-spinner"></span>${text}`;
+}
+
+function renderSimpleResult(data, formEvents, durationMs, formAnswers) {
+  const target = document.getElementById("simpleFormResult");
+  if (!target) return;
+  const intervals = (formEvents || []).map(e => e.intervalMs).filter(v => v > 0);
+  const avgInterval = intervals.length ? Math.round(intervals.reduce((a, b) => a + b, 0) / intervals.length) : 0;
+  const pasteCount = (formEvents || []).filter(e => e.type === "paste").length;
+  const action = data?.action || "unknown";
+  const score = Number.isFinite(Number(data?.score)) ? Number(data.score) : 0;
+  const reason = data?.reason || "—";
+  const color = action === "allow"
+    ? "#10b981"
+    : ((action === "deny" || action === "block") ? "#ef4444" : "#f59e0b");
+
+  target.innerHTML = `
+    <div style="border:1px solid #e7eef7;border-radius:12px;overflow:hidden;background:#fff">
+      <div style="background:${color};color:#fff;padding:10px 12px;font-weight:700;display:flex;justify-content:space-between">
+        <span>${action.toUpperCase()}</span>
+        <span>Score: ${score}</span>
+      </div>
+      <div style="padding:12px;display:grid;gap:8px">
+        <div><b>Причина:</b> ${reason}</div>
+        <div><b>Время:</b> ${Math.round((durationMs || 0) / 1000)} сек</div>
+        <div><b>Событий:</b> ${(formEvents || []).length}, <b>avg interval:</b> ${avgInterval} ms, <b>paste:</b> ${pasteCount}</div>
+        <div><b>Имя:</b> ${formAnswers?.name || "—"}, <b>Телефон:</b> ${formAnswers?.phone || "—"}</div>
+        <div><b>UserId:</b> <span style="font-family:monospace">${userId}</span></div>
+      </div>
+    </div>
+  `;
+}
+
   function setFinalLoading(isLoading, text = "Идет проверка данных...") {
   const wrap = document.getElementById("finalLoading");
   const txt = document.getElementById("finalLoadingText");
@@ -970,6 +1020,7 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
     simpleFormEl.addEventListener("submit", async (e) => {
       e.preventDefault();
       addSimpleEvent("submit", "simple_form");
+      userId = getUnifiedUserId();
 
       const name = simpleNameEl.value.trim();
       const digits = simplePhoneEl.value.replace(/\D/g, "");
@@ -986,18 +1037,21 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
         prepared[i].intervalMs = prepared[i].timestamp - prepared[i - 1].timestamp;
       }
 
-      simpleResultEl.textContent = "Отправка на антибот...";
+      simpleResultEl.textContent = "";
+      setSimpleLoading(true, "Идет проверка данных...");
       try {
         if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
           throw new Error("gigabot_not_loaded");
         }
 
+        const durationMs = Date.now() - simpleFormStart;
+        const formAnswers = { name, phone };
         const result = await window.GigaBot.send({
           type: "simple-form-test",
-          fields: { name, phone },
-          answers: { name, phone },
+          fields: formAnswers,
+          answers: formAnswers,
           events: prepared,
-          durationMs: Date.now() - simpleFormStart,
+          durationMs,
           userId,
           utm: {
             source: utm_source,
@@ -1005,11 +1059,13 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
           }
         });
 
-        simpleResultEl.textContent = `action=${result.action || "unknown"}, score=${result.score ?? "?"}, reason=${result.reason || "—"}`;
+        renderSimpleResult(result, prepared, durationMs, formAnswers);
         simpleFormEvents.length = 0;
         simpleFormStart = Date.now();
       } catch (err) {
         simpleResultEl.textContent = `Ошибка отправки: ${err?.message || "unknown_error"}`;
+      } finally {
+        setSimpleLoading(false);
       }
     });
   }
