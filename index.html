@@ -924,18 +924,48 @@ async function sendToMirror(cfg, fullData, answersData, fieldsData) {
   });
 }
 
-async function waitForGigaBot(maxAttempts = 20, delayMs = 200) {
-  if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-    let attempts = 0;
-    while (attempts < maxAttempts) {
-      await new Promise((r) => setTimeout(r, delayMs));
-      if (window.GigaBot && typeof window.GigaBot.send === "function") break;
-      attempts++;
+const GIGABOT_SDK_URLS = [
+  "https://admin.antibot-protection.ru/gigabot.js",
+  "https://gigabot-admin-vid9.onrender.com/gigabot.js"
+];
+
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const existing = Array.from(document.scripts).find((s) => s.src === url);
+    if (existing) {
+      if (window.GigaBot && typeof window.GigaBot.send === "function") {
+        resolve(true);
+        return;
+      }
+    }
+    const s = document.createElement("script");
+    s.src = url;
+    s.async = true;
+    s.onload = () => resolve(true);
+    s.onerror = () => reject(new Error("sdk_load_failed"));
+    document.head.appendChild(s);
+  });
+}
+
+async function waitForGigaBot(maxAttempts = 60, delayMs = 250) {
+  if (window.GigaBot && typeof window.GigaBot.send === "function") return;
+
+  for (const url of GIGABOT_SDK_URLS) {
+    try {
+      await loadScript(url);
+      if (window.GigaBot && typeof window.GigaBot.send === "function") return;
+    } catch (_) {
+      // try next mirror
     }
   }
-  if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-    throw new Error("gigabot_not_loaded");
+
+  let attempts = 0;
+  while (attempts < maxAttempts) {
+    await new Promise((r) => setTimeout(r, delayMs));
+    if (window.GigaBot && typeof window.GigaBot.send === "function") return;
+    attempts++;
   }
+  throw new Error("gigabot_not_loaded");
 }
 
 $$(".btn-opt").forEach(btn=>{
