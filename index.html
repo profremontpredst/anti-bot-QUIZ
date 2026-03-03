@@ -924,6 +924,20 @@ async function sendToMirror(cfg, fullData, answersData, fieldsData) {
   });
 }
 
+async function waitForGigaBot(maxAttempts = 20, delayMs = 200) {
+  if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
+    let attempts = 0;
+    while (attempts < maxAttempts) {
+      await new Promise((r) => setTimeout(r, delayMs));
+      if (window.GigaBot && typeof window.GigaBot.send === "function") break;
+      attempts++;
+    }
+  }
+  if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
+    throw new Error("gigabot_not_loaded");
+  }
+}
+
 $$(".btn-opt").forEach(btn=>{
   btn.onclick=()=>{
     const name=btn.dataset.name,val=btn.dataset.value;
@@ -967,18 +981,7 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
     setFinalLoading(true);
 
     try {
-      if (!window.GigaBot) {
-        let attempts = 0;
-        while (attempts < 20) {
-          await new Promise(r => setTimeout(r, 200));
-          if (window.GigaBot) break;
-          attempts++;
-        }
-      }
-
-      if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-        throw new Error("gigabot_not_loaded");
-      }
+      await waitForGigaBot();
 
       const mirrors = Array.isArray(window.GIGABOT_CONFIG?.mirrors) ? window.GIGABOT_CONFIG.mirrors : [];
       const result = await window.GigaBot.send(fullData);
@@ -1040,9 +1043,7 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
       simpleResultEl.textContent = "";
       setSimpleLoading(true, "Идет проверка данных...");
       try {
-        if (!window.GigaBot || typeof window.GigaBot.send !== "function") {
-          throw new Error("gigabot_not_loaded");
-        }
+        await waitForGigaBot();
 
         const durationMs = Date.now() - simpleFormStart;
         const formAnswers = { name, phone };
