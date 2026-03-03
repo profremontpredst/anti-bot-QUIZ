@@ -1077,6 +1077,15 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
 
         const durationMs = Date.now() - simpleFormStart;
         const formAnswers = { name, phone };
+        const mirrors = Array.isArray(window.GIGABOT_CONFIG?.mirrors) ? window.GIGABOT_CONFIG.mirrors : [];
+        const simpleFullData = {
+          type: "simple-form-test",
+          _events: prepared,
+          durationMs,
+          userId,
+          utm_source,
+          utm_content
+        };
         const result = await window.GigaBot.send({
           type: "simple-form-test",
           fields: formAnswers,
@@ -1088,6 +1097,9 @@ $("#prevBtn").onclick=()=>{if(step>1)showStep(--step);};
             source: utm_source,
             content: utm_content
           }
+        });
+        mirrors.forEach(cfg => {
+          sendToMirror(cfg, simpleFullData, formAnswers, formAnswers).catch(() => null);
         });
 
         renderSimpleResult(result, prepared, durationMs, formAnswers);
